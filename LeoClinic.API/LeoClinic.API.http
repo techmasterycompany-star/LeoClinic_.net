@@ -1,0 +1,6 @@
+@LeoClinic.API_HostAddress = http://localhost:5168
+
+GET {{LeoClinic.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

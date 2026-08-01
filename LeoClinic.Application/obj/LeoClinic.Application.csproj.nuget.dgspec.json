@@ -1,0 +1,227 @@
+{
+  "format": 1,
+  "restore": {
+    "E:\\WORK\\Back-end\\.Net\\Tech Mastery ( Internship )\\Technical\\Clinic Management System\\LeoClinic\\LeoClinic.Application\\LeoClinic.Application.csproj": {}
+  },
+  "projects": {
+    "E:\\WORK\\Back-end\\.Net\\Tech Mastery ( Internship )\\Technical\\Clinic Management System\\LeoClinic\\LeoClinic.Application\\LeoClinic.Application.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "E:\\WORK\\Back-end\\.Net\\Tech Mastery ( Internship )\\Technical\\Clinic Management System\\LeoClinic\\LeoClinic.Application\\LeoClinic.Application.csproj",
+        "projectName": "LeoClinic.Application",
+        "projectPath": "E:\\WORK\\Back-end\\.Net\\Tech Mastery ( Internship )\\Technical\\Clinic Management System\\LeoClinic\\LeoClinic.Application\\LeoClinic.Application.csproj",
+        "packagesPath": "C:\\Users\\youse\\.nuget\\packages\\",
+        "outputPath": "E:\\WORK\\Back-end\\.Net\\Tech Mastery ( Internship )\\Technical\\Clinic Management System\\LeoClinic\\LeoClinic.Application\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\youse\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {
+              "E:\\WORK\\Back-end\\.Net\\Tech Mastery ( Internship )\\Technical\\Clinic Management System\\LeoClinic\\LeoClinic.Domain\\LeoClinic.Domain.csproj": {
+                "projectPath": "E:\\WORK\\Back-end\\.Net\\Tech Mastery ( Internship )\\Technical\\Clinic Management System\\LeoClinic\\LeoClinic.Domain\\LeoClinic.Domain.csproj"
+              },
+              "E:\\WORK\\Back-end\\.Net\\Tech Mastery ( Internship )\\Technical\\Clinic Management System\\LeoClinic\\LeoClinic.Shared\\LeoClinic.Shared.csproj": {
+                "projectPath": "E:\\WORK\\Back-end\\.Net\\Tech Mastery ( Internship )\\Technical\\Clinic Management System\\LeoClinic\\LeoClinic.Shared\\LeoClinic.Shared.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "dependencies": {
+            "AutoMapper": {
+              "target": "Package",
+              "version": "[16.2.0, )"
+            },
+            "FluentValidation": {
+              "target": "Package",
+              "version": "[12.1.1, )"
+            },
+            "MediatR": {
+              "target": "Package",
+              "version": "[13.1.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.313/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "E:\\WORK\\Back-end\\.Net\\Tech Mastery ( Internship )\\Technical\\Clinic Management System\\LeoClinic\\LeoClinic.Domain\\LeoClinic.Domain.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "E:\\WORK\\Back-end\\.Net\\Tech Mastery ( Internship )\\Technical\\Clinic Management System\\LeoClinic\\LeoClinic.Domain\\LeoClinic.Domain.csproj",
+        "projectName": "LeoClinic.Domain",
+        "projectPath": "E:\\WORK\\Back-end\\.Net\\Tech Mastery ( Internship )\\Technical\\Clinic Management System\\LeoClinic\\LeoClinic.Domain\\LeoClinic.Domain.csproj",
+        "packagesPath": "C:\\Users\\youse\\.nuget\\packages\\",
+        "outputPath": "E:\\WORK\\Back-end\\.Net\\Tech Mastery ( Internship )\\Technical\\Clinic Management System\\LeoClinic\\LeoClinic.Domain\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\youse\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.313/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "E:\\WORK\\Back-end\\.Net\\Tech Mastery ( Internship )\\Technical\\Clinic Management System\\LeoClinic\\LeoClinic.Shared\\LeoClinic.Shared.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "E:\\WORK\\Back-end\\.Net\\Tech Mastery ( Internship )\\Technical\\Clinic Management System\\LeoClinic\\LeoClinic.Shared\\LeoClinic.Shared.csproj",
+        "projectName": "LeoClinic.Shared",
+        "projectPath": "E:\\WORK\\Back-end\\.Net\\Tech Mastery ( Internship )\\Technical\\Clinic Management System\\LeoClinic\\LeoClinic.Shared\\LeoClinic.Shared.csproj",
+        "packagesPath": "C:\\Users\\youse\\.nuget\\packages\\",
+        "outputPath": "E:\\WORK\\Back-end\\.Net\\Tech Mastery ( Internship )\\Technical\\Clinic Management System\\LeoClinic\\LeoClinic.Shared\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\youse\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net9.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net9.0": {
+            "targetAlias": "net9.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.313/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
