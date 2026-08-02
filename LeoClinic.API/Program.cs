@@ -1,3 +1,6 @@
+using LeoClinic.Application;
+using LeoClinic.Infrastructure;
+
 var builder = WebApplication.CreateBuilder(args);
 
 
@@ -12,11 +15,14 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
+    app.UseSwagger();
+    app.UseSwaggerUI();
     app.MapOpenApi();
 }
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
