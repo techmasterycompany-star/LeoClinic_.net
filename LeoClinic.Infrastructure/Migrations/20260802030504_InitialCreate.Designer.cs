@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LeoClinic.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260802015119_InitialCreate")]
+    [Migration("20260802030504_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
