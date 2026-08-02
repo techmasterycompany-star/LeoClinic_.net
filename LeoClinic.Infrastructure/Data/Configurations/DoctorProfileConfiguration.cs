@@ -31,7 +31,7 @@ public class DoctorProfileConfiguration : IEntityTypeConfiguration<DoctorProfile
 
         builder.HasOne(d => d.Speciality)
             .WithMany()
-            .HasForeignKey(d => d.SpecialtyId)
+            .HasForeignKey(d => d.SpecialityId)
             .OnDelete(DeleteBehavior.Restrict);
     }
 }
