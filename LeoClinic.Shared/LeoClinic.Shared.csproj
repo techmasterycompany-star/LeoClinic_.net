@@ -10,8 +10,6 @@
     <Folder Include="Helpers\" />
     <Folder Include="Constants\" />
     <Folder Include="Common\" />
-    <Folder Include="Results\" />
-    <Folder Include="Responses\" />
   </ItemGroup>
 
 </Project>
