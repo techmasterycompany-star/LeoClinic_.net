@@ -13,7 +13,7 @@ namespace LeoClinic.Domain.Entities
 
         public int UserId { get; set; }
         public User User { get; set; } = null!;
-        public int SpecialtyId { get; set; }
+        public int SpecialityId { get; set; }
         public Speciality Speciality { get; set; } = null!;
 
         public ICollection<DoctorLocation> DoctorLocations { get; set; } = new List<DoctorLocation>();
