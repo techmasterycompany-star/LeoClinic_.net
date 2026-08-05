@@ -1,7 +1,6 @@
 ﻿using LeoClinic.Domain.Common;
 using LeoClinic.Domain.Enums;
 
-
 namespace LeoClinic.Domain.Entities
 {
     public class Appointment : BaseEntity
