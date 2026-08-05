@@ -20,7 +20,7 @@
 
   <ItemGroup>
     <Folder Include="DTOs\" />
-    <Folder Include="Services\Interfaces\" />
+    <Folder Include="Interfaces\" />
     <Folder Include="Services\" />
   </ItemGroup>
 
