@@ -37,7 +37,6 @@ namespace LeoClinic.Application.Services
                 Address = patient.Address,
                 ContactNumber = patient.ContactNumber,
                 DateOfBirth = patient.DateOfBirth,
-                Id = patient.UserId,
                 IsApproved = patient.IsApproved,
                 DateJoined = patient.User?.DateJoined ?? DateTime.UtcNow,
                 FirstName = patient.User?.FirstName ?? string.Empty,
