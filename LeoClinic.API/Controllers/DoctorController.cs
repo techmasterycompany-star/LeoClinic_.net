@@ -134,7 +134,7 @@ namespace LeoClinic.API.Controllers
         }
 
         [HttpPut("appointments/{appointmentId}/status")]
-        //[Authorize(Roles = "Doctor")]
+        [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> UpdateAppointment(int appointmentId, [FromQuery] AppointmentStatus status)
         {
             var appointment = await service.UpdateAppointmentAsync(appointmentId, status);
