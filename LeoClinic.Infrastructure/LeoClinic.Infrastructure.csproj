@@ -26,4 +26,12 @@
     <ProjectReference Include="..\LeoClinic.Shared\LeoClinic.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\Configurations\" />
+    <Folder Include="Repositories\" />
+    <Folder Include="Services\" />
+  </ItemGroup>
+
+  </ItemGroup>
+
 </Project>

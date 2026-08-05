@@ -127,10 +127,10 @@ namespace LeoClinic.Infrastructure.Repositories
             context.DoctorProfiles.Update(doctorProfile);
         }
 
-        public Task<Appointment> UpdateAppointmentAsync(Appointment appointment)
+        public async Task<Appointment> UpdateAppointmentAsync(Appointment appointment)
         {
             context.Appointments.Update(appointment);
-            return Task.FromResult(appointment);
+            return appointment;
         }
         public async Task SaveChangesAsync()
         {
