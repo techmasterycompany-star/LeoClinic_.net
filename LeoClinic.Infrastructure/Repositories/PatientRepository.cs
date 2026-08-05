@@ -33,8 +33,12 @@ namespace LeoClinic.Infrastructure.Repositories
         }
         public async Task<PatientProfile> CreatePatientAsync(PatientProfile patientProfile)
         {
-            var patient = _context.PatientProfiles.Add(patientProfile);
+            var patient = await _context.PatientProfiles.AddAsync(patientProfile);
             await _context.SaveChangesAsync();
+
+            // Ensure navigation property is loaded before returning
+            await _context.Entry(patient.Entity).Reference(p => p.User).LoadAsync();
+
             return patient.Entity;
         }
 
@@ -45,7 +49,7 @@ namespace LeoClinic.Infrastructure.Repositories
         }
         public async Task DeletePatientAsync(int id)
         {
-            var patientProfile = _context.PatientProfiles.Find(id);
+            var patientProfile = await _context.PatientProfiles.FindAsync(id);
             if (patientProfile != null)
             {
                 _context.PatientProfiles.Remove(patientProfile);
@@ -53,7 +57,7 @@ namespace LeoClinic.Infrastructure.Repositories
             }
             else
             {
-                throw new KeyNotFoundException($"patient with id: {id} Not Found");
+                throw new KeyNotFoundException($"Patient with id: {id} Not Found");
             }
         }
 
@@ -63,6 +67,11 @@ namespace LeoClinic.Infrastructure.Repositories
             if (patient != null)
             {
                 patient.IsApproved = true;
+                await _context.SaveChangesAsync();
+            }
+            else
+            {
+                throw new KeyNotFoundException($"Patient with id: {id} not found");
             }
         }
     }

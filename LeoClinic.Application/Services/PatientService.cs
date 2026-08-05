@@ -27,22 +27,23 @@ namespace LeoClinic.Application.Services
                 UserId = createPatientDTO.UserId
             };
 
-            await _patientRepository.CreatePatientAsync(patient);
+            // Repository now loads User before returning
+            patient = await _patientRepository.CreatePatientAsync(patient);
 
             var result = new PatientProfileDTO
             {
+                Id = patient.Id, 
                 UserId = patient.UserId,
                 Address = patient.Address,
                 ContactNumber = patient.ContactNumber,
                 DateOfBirth = patient.DateOfBirth,
-                Id = patient.UserId,
                 IsApproved = patient.IsApproved,
-                DateJoined = DateTime.Now,
-                FirstName = patient.User.FirstName,
-                LastName = patient.User.LastName,
-                Email = patient.User.Email,
-                Role = patient.User.Role,
-                IsBlocked = patient.User.IsBlocked
+                DateJoined = patient.User?.DateJoined ?? DateTime.UtcNow,
+                FirstName = patient.User?.FirstName ?? string.Empty,
+                LastName = patient.User?.LastName ?? string.Empty,
+                Email = patient.User?.Email ?? string.Empty,
+                Role = patient.User?.Role ?? default,
+                IsBlocked = patient.User?.IsBlocked ?? false
             };
 
             return result;
