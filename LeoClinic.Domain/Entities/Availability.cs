@@ -1,6 +1,5 @@
 ﻿using LeoClinic.Domain.Common;
 
-
 namespace LeoClinic.Domain.Entities
 {
     public class Availability : BaseEntity
