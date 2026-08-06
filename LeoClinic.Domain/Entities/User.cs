@@ -1,4 +1,4 @@
-﻿using LeoClinic.Domain.Common;
+using LeoClinic.Domain.Common;
 using LeoClinic.Domain.Enums;
 
 namespace LeoClinic.Domain.Entities
@@ -11,7 +11,8 @@ namespace LeoClinic.Domain.Entities
         public string PasswordHash { get; set; } = string.Empty;
         public UserRole Role { get; set; }
         public bool IsBlocked { get; set; }
-        public DateTime DateJoined { get; set; } = DateTime.UtcNow;
+        public bool EmailConfirmed { get; set; }
+
 
         public DoctorProfile? DoctorProfile { get; set; }
         public PatientProfile? PatientProfile { get; set; }

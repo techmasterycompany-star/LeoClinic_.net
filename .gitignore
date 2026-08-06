@@ -39,6 +39,12 @@ TestResult.xml
 !.vscode/extensions.json
 *.code-workspace
 
+## Environment Secrets
+.env
+.env.*
+.env.local
+!.env.example
+
 ## ReSharper
 _ReSharper*/
 *.[Rr]e[Ss]harper
