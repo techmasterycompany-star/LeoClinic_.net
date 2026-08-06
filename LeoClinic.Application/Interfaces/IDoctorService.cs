@@ -8,6 +8,7 @@ namespace LeoClinic.Application.Interfaces
     {
         Task<IEnumerable<DoctorProfileDto?>> GetAllDoctorsAsync();
         Task<DoctorProfileDto?> GetDoctorProfileAsync(int id);
+        Task<IEnumerable<DoctorProfileDto?>> SearchDoctorAsync(string? specialty, int? locationId, string? name, bool? isApproved);
         Task<DoctorProfileDto> CreateProfileAsync(CreateDoctorDto dto);
         Task<DoctorProfileDto?> UpdateProfileAsync(int id ,UpdateDoctorDto dto);
         Task<bool> DeleteProfileAsync(int id);

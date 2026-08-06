@@ -24,6 +24,13 @@ namespace LeoClinic.API.Controllers
             return Ok(doctors);
         }
 
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchDoctor(string? specialty, int? locationId, string? name, bool? isApproved)
+        {
+            var doctors = await service.SearchDoctorAsync(specialty, locationId, name, isApproved);
+            return Ok(doctors);
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetDoctorProfile(int id)
         {
