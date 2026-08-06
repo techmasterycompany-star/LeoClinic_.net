@@ -129,6 +129,34 @@ namespace LeoClinic.Application.Services
             }).ToList();
         }
 
+        public async Task<IEnumerable<DoctorProfileDto?>> SearchDoctorAsync(string? specialty, int? locationId, string? name, bool? isApproved)
+        {
+            var doctors = await repo.SearchAsync(specialty, locationId, name, isApproved);    
+
+            return doctors.Select(d => new DoctorProfileDto
+            {
+                Id = d.Id,
+                Price = d.Price,
+                Bio = d.Bio,
+                ContactNumber = d.ContactNumber,
+                IsApproved = d.IsApproved,
+                UserId = d.UserId,
+                UserName = d.User != null ? $"{d.User.FirstName} {d.User.LastName}" : string.Empty,
+                UserEmail = d.User?.Email ?? string.Empty,
+                SpecialityId = d.SpecialityId,
+                SpecialityName = d.Speciality?.Name ?? string.Empty,
+                Locations = d.DoctorLocations?.Select(dl => new LocationDto
+                {
+                    Id = dl.Location.Id,
+                    Name = dl.Location.Name,
+                    Address = dl.Location.Address,
+                    City = dl.Location.City
+                }).ToList() ?? new List<LocationDto>(),
+                AverageRating = d.Ratings?.Any() == true ? d.Ratings.Average(r => r.Rate) : 0
+            }).ToList();
+        }
+
+
         public async Task<AppointmentDto?> GetAppointmentByIdAsync(int appointmentId)
         {
             var appointment = await repo.GetAppointmentByIdAsync(appointmentId);
