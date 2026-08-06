@@ -22,7 +22,7 @@ namespace LeoClinic.Infrastructure.Repositories
 
             if (!string.IsNullOrEmpty(specialty))
             {
-                query = query.Where(d => d.Speciality.Name.Contains(specialty));
+                query = query.Where(d => d.Speciality.Name.ToLower().Contains(specialty.ToLower()));
             }
 
             if (locationId.HasValue)
@@ -32,7 +32,7 @@ namespace LeoClinic.Infrastructure.Repositories
 
             if (!string.IsNullOrEmpty(name))
             {
-                query = query.Where(d => d.User.FirstName.Contains(name) || d.User.LastName.Contains(name));
+                query = query.Where(d => d.User.FirstName.ToLower().Contains(name.ToLower()) || d.User.LastName.ToLower().Contains(name.ToLower()));
             }
 
             if (isApproved.HasValue)
