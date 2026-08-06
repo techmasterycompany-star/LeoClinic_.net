@@ -32,8 +32,9 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.IsBlocked)
             .IsRequired();
 
-        builder.Property(u => u.DateJoined)
+        builder.Property(u => u.EmailConfirmed)
             .IsRequired();
+
 
         builder.HasOne(u => u.DoctorProfile)
             .WithOne(d => d.User)

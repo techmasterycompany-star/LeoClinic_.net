@@ -1,4 +1,6 @@
+using LeoClinic.Application.Interfaces;
 using LeoClinic.Infrastructure.Data;
+using LeoClinic.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,6 +13,9 @@ namespace LeoClinic.Infrastructure
         {
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IVerificationCodeRepository, VerificationCodeRepository>();
 
             return services;
         }
