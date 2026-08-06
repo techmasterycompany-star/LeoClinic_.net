@@ -4,6 +4,7 @@ using LeoClinic.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LeoClinic.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260806222911_AddEmailConfirmedAttr")]
+    partial class AddEmailConfirmedAttr
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -55,8 +58,7 @@ namespace LeoClinic.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AvailabilityId")
-                        .IsUnique()
-                        .HasFilter("[Status] <> 3 AND [Status] <> 4");
+                        .IsUnique();
 
                     b.HasIndex("DoctorId");
 
@@ -238,27 +240,12 @@ namespace LeoClinic.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsRead")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Message")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("ReadAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("RetryCount")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("SentAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -343,14 +330,6 @@ namespace LeoClinic.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TransactionReference")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -520,9 +499,9 @@ namespace LeoClinic.Infrastructure.Migrations
             modelBuilder.Entity("LeoClinic.Domain.Entities.Appointment", b =>
                 {
                     b.HasOne("LeoClinic.Domain.Entities.Availability", "Availability")
-                        .WithMany("Appointments")
-                        .HasForeignKey("AvailabilityId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .WithOne("Appointment")
+                        .HasForeignKey("LeoClinic.Domain.Entities.Appointment", "AvailabilityId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("LeoClinic.Domain.Entities.DoctorProfile", "DoctorProfile")
@@ -692,7 +671,7 @@ namespace LeoClinic.Infrastructure.Migrations
 
             modelBuilder.Entity("LeoClinic.Domain.Entities.Availability", b =>
                 {
-                    b.Navigation("Appointments");
+                    b.Navigation("Appointment");
                 });
 
             modelBuilder.Entity("LeoClinic.Domain.Entities.DoctorProfile", b =>
