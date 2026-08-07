@@ -36,6 +36,8 @@ namespace LeoClinic.Infrastructure
             services.AddScoped<IAdminRepository, AdminRepository>(); 
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IVerificationCodeRepository, VerificationCodeRepository>();
+            services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+
 
             return services;
         }

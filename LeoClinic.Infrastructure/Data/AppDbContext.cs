@@ -1,4 +1,4 @@
-﻿using LeoClinic.Domain.Entities;
+using LeoClinic.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace LeoClinic.Infrastructure.Data
@@ -8,6 +8,8 @@ namespace LeoClinic.Infrastructure.Data
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
         public DbSet<User> Users => Set<User>();
         public DbSet<VerificationCode> VerificationCodes => Set<VerificationCode>();
+        public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+
         public DbSet<DoctorProfile> DoctorProfiles => Set<DoctorProfile>();
         public DbSet<PatientProfile> PatientProfiles => Set<PatientProfile>();
         public DbSet<Speciality> Specialties => Set<Speciality>();

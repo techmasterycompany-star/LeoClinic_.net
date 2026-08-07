@@ -2,6 +2,8 @@ using LeoClinic.Application.DTOs;
 using LeoClinic.Application.Interfaces;
 using LeoClinic.Domain.Entities;
 using LeoClinic.Domain.Enums;
+using System;
+using System.Threading.Tasks;
 
 namespace LeoClinic.Application.Services
 {
@@ -9,6 +11,7 @@ namespace LeoClinic.Application.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IVerificationCodeRepository _verificationCodeRepository;
+        private readonly IRefreshTokenRepository _refreshTokenRepository;
         private readonly IPasswordService _passwordService;
         private readonly IJwtService _jwtService;
         private readonly IEmailService _emailService;
@@ -16,12 +19,14 @@ namespace LeoClinic.Application.Services
         public AuthService(
             IUserRepository userRepository,
             IVerificationCodeRepository verificationCodeRepository,
+            IRefreshTokenRepository refreshTokenRepository,
             IPasswordService passwordService,
             IJwtService jwtService,
             IEmailService emailService)
         {
             _userRepository = userRepository;
             _verificationCodeRepository = verificationCodeRepository;
+            _refreshTokenRepository = refreshTokenRepository;
             _passwordService = passwordService;
             _jwtService = jwtService;
             _emailService = emailService;
@@ -87,7 +92,18 @@ namespace LeoClinic.Application.Services
             await _userRepository.AddAsync(user);
             await _userRepository.SaveChangesAsync();
 
-            var code = await CreateVerificationCode(user.Id , VerificationType.EmailVerification);
+            var code = Random.Shared.Next(100000, 999999).ToString();
+            var verificationCode = new VerificationCode
+            {
+                UserId = user.Id,
+                Token = code,
+                Type = VerificationType.EmailVerification,
+                ExpiresAt = DateTime.UtcNow.AddMinutes(15),
+                UsedAt = null
+            };
+
+            await _verificationCodeRepository.AddAsync(verificationCode);
+            await _verificationCodeRepository.SaveChangesAsync();
 
             await _emailService.SendEmailAsync(
                 user.Email,
@@ -121,13 +137,29 @@ namespace LeoClinic.Application.Services
                 throw new InvalidOperationException("Your account has been blocked.");
             }
 
-            var (token, expiresAt) = _jwtService.GenerateToken(user);
+            var (accessToken, accessTokenExpiresAt) = _jwtService.GenerateAccessToken(user);
+            var (refreshTokenStr, refreshTokenExpiresAt) = _jwtService.GenerateRefreshToken();
 
-            return new AuthResponseDTO
+            var refreshTokenEntity = new RefreshToken
             {
-                Token = token,
-                ExpiresAt = expiresAt
+                UserId = user.Id,
+                Token = refreshTokenStr,
+                ExpiresAt = refreshTokenExpiresAt,
+                CreatedAt = DateTime.UtcNow
             };
+
+            await _refreshTokenRepository.AddAsync(refreshTokenEntity);
+            await _refreshTokenRepository.SaveChangesAsync();
+
+            var authResponse = new AuthResponseDTO
+            {
+                Token = accessToken,
+                RefreshToken = refreshTokenStr,
+                TokenExpiresAt = accessTokenExpiresAt,
+                RefreshTokenExpiresAt = refreshTokenExpiresAt
+            };
+
+            return authResponse;
         }
 
         public async Task<string> VerifyEmail(VerifyEmailRequestDTO request)
@@ -191,7 +223,18 @@ namespace LeoClinic.Application.Services
                 return "Email is already verified.";
             }
 
-            var code = await CreateVerificationCode(user.Id, VerificationType.EmailVerification);
+            var code = Random.Shared.Next(100000, 999999).ToString();
+            var verificationCode = new VerificationCode
+            {
+                UserId = user.Id,
+                Token = code,
+                Type = VerificationType.EmailVerification,
+                ExpiresAt = DateTime.UtcNow.AddMinutes(15),
+                UsedAt = null
+            };
+
+            await _verificationCodeRepository.AddAsync(verificationCode);
+            await _verificationCodeRepository.SaveChangesAsync();
 
             await _emailService.SendEmailAsync(
                 user.Email,
@@ -202,21 +245,72 @@ namespace LeoClinic.Application.Services
             return "A new verification code has been sent to your email.";
         }
 
-        private async Task<string> CreateVerificationCode(int userId,VerificationType type)
+        public async Task<AuthResponseDTO> RefreshToken(string refreshToken)
         {
-            var code = Random.Shared.Next(100000, 999999).ToString();
-            var verificationCode = new VerificationCode
+            if (string.IsNullOrWhiteSpace(refreshToken))
             {
-                UserId = userId,
-                Token = code,
-                Type = VerificationType.EmailVerification,
-                ExpiresAt = DateTime.UtcNow.AddMinutes(15),
-                UsedAt = null
+                throw new ArgumentException("Refresh token is required.");
+            }
+
+            var tokenEntity = await _refreshTokenRepository.GetByTokenAsync(refreshToken);
+            if (tokenEntity == null)
+            {
+                throw new UnauthorizedAccessException("Invalid refresh token.");
+            }
+
+            if (tokenEntity.RevokedAt != null)
+            {
+                throw new UnauthorizedAccessException("Refresh token has been revoked.");
+            }
+
+            if (tokenEntity.ExpiresAt < DateTime.UtcNow)
+            {
+                throw new UnauthorizedAccessException("Refresh token has expired.");
+            }
+
+            if (tokenEntity.User == null || tokenEntity.User.IsBlocked)
+            {
+                throw new UnauthorizedAccessException("User is inactive or blocked.");
+            }
+
+            tokenEntity.RevokedAt = DateTime.UtcNow;
+
+            var (newAccessToken, newAccessTokenExpiresAt) = _jwtService.GenerateAccessToken(tokenEntity.User);
+            var (newRefreshTokenStr, newRefreshTokenExpiresAt) = _jwtService.GenerateRefreshToken();
+
+            var newRefreshTokenEntity = new RefreshToken
+            {
+                UserId = tokenEntity.User.Id,
+                Token = newRefreshTokenStr,
+                ExpiresAt = newRefreshTokenExpiresAt,
+                CreatedAt = DateTime.UtcNow
             };
 
-            await _verificationCodeRepository.AddAsync(verificationCode);
-            await _verificationCodeRepository.SaveChangesAsync();
-            return code;
+            await _refreshTokenRepository.AddAsync(newRefreshTokenEntity);
+            await _refreshTokenRepository.SaveChangesAsync();
+
+            var authResponse = new AuthResponseDTO
+            {
+                Token = newAccessToken,
+                RefreshToken = newRefreshTokenStr,
+                TokenExpiresAt = newAccessTokenExpiresAt,
+                RefreshTokenExpiresAt = newRefreshTokenExpiresAt
+            };
+
+            return authResponse;
+        }
+
+        public async Task Logout(string? refreshToken)
+        {
+            if (!string.IsNullOrWhiteSpace(refreshToken))
+            {
+                var tokenEntity = await _refreshTokenRepository.GetByTokenAsync(refreshToken);
+                if (tokenEntity != null && tokenEntity.RevokedAt == null)
+                {
+                    tokenEntity.RevokedAt = DateTime.UtcNow;
+                    await _refreshTokenRepository.SaveChangesAsync();
+                }
+            }
         }
     }
 }
