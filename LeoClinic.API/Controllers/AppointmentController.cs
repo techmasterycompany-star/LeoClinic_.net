@@ -19,26 +19,51 @@ namespace LeoClinic.API.Controllers
         [HttpPost]
         public async Task<IActionResult> BookAppointment([FromBody] CreateAppointmentDTO appointment)
         {
-            var app = await _appointmentService.BookAppointmentAsync(appointment);
-            return Ok(app);
+            try
+            {
+                var app = await _appointmentService.BookAppointmentAsync(appointment);
+                return Ok(app);
+            }
+            catch (KeyNotFoundException knf)
+            {
+                return NotFound(new { error = knf.Message });
+            }
+            catch (InvalidOperationException inv)
+            {
+                return BadRequest(new { error = inv.Message });
+            }
         }
 
         [HttpPost("{id}/reschedule/{availabilityId}")]
         public async Task<IActionResult> RescheduleAppointment(int id, int availabilityId)
         {
-            var result = await _appointmentService.RescheduleAppointment(id, availabilityId);
-            if (!result)
-                return NotFound();
-            return NoContent();
+            try
+            {
+                var result = await _appointmentService.RescheduleAppointment(id, availabilityId);
+                if (!result)
+                    return NotFound();
+                return NoContent();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
         }
 
         [HttpPatch("{id}/cancel")]
         public async Task<IActionResult> CancelAppointment(int id)
         {
-            var result = await _appointmentService.UpdateAppointmentStatusAsync(id, Domain.Enums.AppointmentStatus.Cancelled);
-            if (!result)
-                return NotFound();
-            return NoContent();
+            try
+            {
+                var result = await _appointmentService.UpdateAppointmentStatusAsync(id, Domain.Enums.AppointmentStatus.Cancelled);
+                if (!result)
+                    return NotFound();
+                return NoContent();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
         }
     }
 }
