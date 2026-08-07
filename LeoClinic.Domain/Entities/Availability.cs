@@ -16,6 +16,6 @@ namespace LeoClinic.Domain.Entities
         public Location Location { get; set; } = null!;
 
 
-        public Appointment? Appointment { get; set; }
+        public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
     }
 }
