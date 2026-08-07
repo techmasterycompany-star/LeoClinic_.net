@@ -2,10 +2,9 @@ using LeoClinic.Application.Interfaces;
 using LeoClinic.Domain.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace LeoClinic.Application.Services
@@ -19,19 +18,13 @@ namespace LeoClinic.Application.Services
             _configuration = configuration;
         }
 
-        public (string Token, DateTime ExpiresAt) GenerateToken(User user)
+        public (string Token, DateTime ExpiresAt) GenerateAccessToken(User user)
         {
-            var key = _configuration["Jwt:Key"] ?? throw new InvalidOperationException("JWT key is not configured.");
+            var key = _configuration["Jwt:Key"];
             var issuer = _configuration["Jwt:Issuer"];
             var audience = _configuration["Jwt:Audience"];
-            var expiryMinutesStr = _configuration["Jwt:ExpiryMinutes"];
 
-            if (!double.TryParse(expiryMinutesStr, out double expiryMinutes))
-            {
-                expiryMinutes = 60;
-            }
-
-            var expiresAt = DateTime.UtcNow.AddMinutes(expiryMinutes);
+            var expiresAt = DateTime.UtcNow.AddMinutes(15);
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
@@ -57,6 +50,18 @@ namespace LeoClinic.Application.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
             return (tokenHandler.WriteToken(token), expiresAt);
+        }
+
+        public (string Token, DateTime ExpiresAt) GenerateRefreshToken()
+        {
+            var randomNumber = new byte[64];
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomNumber);
+
+            var refreshToken = Convert.ToBase64String(randomNumber);
+            var expiresAt = DateTime.UtcNow.AddDays(7);
+
+            return (refreshToken, expiresAt);
         }
     }
 }

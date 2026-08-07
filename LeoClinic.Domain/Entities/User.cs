@@ -17,6 +17,8 @@ namespace LeoClinic.Domain.Entities
         public DoctorProfile? DoctorProfile { get; set; }
         public PatientProfile? PatientProfile { get; set; }
         public ICollection<VerificationCode> VerificationCodes { get; set; } = new List<VerificationCode>();
+        public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
         public ICollection<Notification> Notifications { get; set; } = new List<Notification>();
+
     }
 }
