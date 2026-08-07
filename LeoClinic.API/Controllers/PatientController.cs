@@ -11,9 +11,11 @@ namespace LeoClinic.API.Controllers
     public class PatientController : ControllerBase
     {
         private readonly IPatientService _patientService;
-        public PatientController(IPatientService patientService)
+        private readonly IAppointmentService _appointmentService;
+        public PatientController(IPatientService patientService, IAppointmentService appointmentService)
         {
             _patientService = patientService;
+            _appointmentService = appointmentService;
         }
 
         [HttpGet]
@@ -52,7 +54,7 @@ namespace LeoClinic.API.Controllers
         public async Task<IActionResult> UpdatePatient(int id, [FromBody] UpdatePatientProfileDTO dto)
         {
             var result = await _patientService.UpdatePatientProfileAsync(id, dto);
-            if(!result)
+            if (!result)
                 return NotFound();
 
             return NoContent();
@@ -78,6 +80,13 @@ namespace LeoClinic.API.Controllers
                 return NotFound();
 
             return Ok(new { message = "Patient approved successfully" });
+        }
+
+        [HttpGet("{id}/appointments")]
+        public async Task<IActionResult> GetAppointmentsByPatient(int id)
+        {
+            var appointments = await _appointmentService.GetAllByPatientAsync(id);
+            return Ok(appointments);
         }
     }
 }

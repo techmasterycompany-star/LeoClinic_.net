@@ -27,8 +27,12 @@ public class AppointmentConfiguration : IEntityTypeConfiguration<Appointment>
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(a => a.Availability)
-            .WithOne(av => av.Appointment)
-            .HasForeignKey<Appointment>(a => a.AvailabilityId)
-            .OnDelete(DeleteBehavior.Cascade);
+            .WithMany(av => av.Appointments)
+            .HasForeignKey(a => a.AvailabilityId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        builder.HasIndex(a => a.AvailabilityId)
+            .IsUnique()
+            .HasFilter("[Status] <> 3 AND [Status] <> 4");
     }
 }
