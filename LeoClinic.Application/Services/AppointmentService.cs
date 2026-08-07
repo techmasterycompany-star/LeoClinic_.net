@@ -110,14 +110,16 @@ namespace LeoClinic.Application.Services
             var appointment = await _appointmentRepo.GetAppointmentByIdAsync(id);
             if (appointment == null)
             {
-                throw new KeyNotFoundException("Appointment not found");
+                return false;
             }
-            var oldSlot = appointment.Availability;
 
+            var oldSlot = appointment.Availability;
             var newSlot = await _availabilityRepository.GetSlotByIdAsync(newAvailabilityId);
 
             if (newSlot == null || oldSlot == null)
-                throw new KeyNotFoundException("availability slot not found.");
+            {
+                return false;
+            }
 
             if (newSlot.DoctorId != oldSlot.DoctorId)
                 throw new InvalidOperationException("Cannot reschedule to a different doctor's slot.");
@@ -141,14 +143,18 @@ namespace LeoClinic.Application.Services
             var appointment = await _appointmentRepo.GetAppointmentByIdAsync(id);
             if (appointment == null)
             {
-                throw new KeyNotFoundException("Appointment not found");
+                return false;
             }
+
             appointment.Status = status;
             appointment.UpdatedAt = DateTime.UtcNow;
             if(status == AppointmentStatus.Cancelled || status == AppointmentStatus.Rejected)
             {
-                appointment.Availability.IsBooked = false;
-                appointment.Availability.UpdatedAt = DateTime.UtcNow;
+                if (appointment.Availability != null)
+                {
+                    appointment.Availability.IsBooked = false;
+                    appointment.Availability.UpdatedAt = DateTime.UtcNow;
+                }
             }
             await _appointmentRepo.UpdateAppointmentAsync(appointment);
             return true;
