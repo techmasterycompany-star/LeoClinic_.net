@@ -80,7 +80,7 @@ namespace LeoClinic.Application.Services
                 return false;
             }
             ratingToUpdate.Rate = rating.RatingValue;
-            ratingToUpdate.Review = rating.review ?? string.Empty;
+            ratingToUpdate.Review = rating.Review ?? string.Empty;
 
             await _ratingRepository.UpdateRating(ratingToUpdate);
             return true;
