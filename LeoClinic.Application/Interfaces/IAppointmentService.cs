@@ -12,6 +12,5 @@ namespace LeoClinic.Application.Interfaces
         Task<AppointmentDto> BookAppointmentAsync(CreateAppointmentDTO appointment);
         Task<bool> UpdateAppointmentStatusAsync(int id, AppointmentStatus status);
         Task<bool> RescheduleAppointment(int id, int availabilityId);
-        Task<bool> isAppointmentCompleted(int id);
     }
 }

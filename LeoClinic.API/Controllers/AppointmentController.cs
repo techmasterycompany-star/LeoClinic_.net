@@ -34,7 +34,7 @@ namespace LeoClinic.API.Controllers
             }
         }
 
-        [HttpPost("{id}/reschedule/{availabilityId}")]
+        [HttpPatch("{id}/reschedule/{availabilityId}")]
         public async Task<IActionResult> RescheduleAppointment(int id, int availabilityId)
         {
             try

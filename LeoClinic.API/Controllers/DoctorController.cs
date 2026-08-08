@@ -1,6 +1,5 @@
 ﻿using LeoClinic.Application.DTOs.Doctor;
 using LeoClinic.Application.DTOs.Patient;
-using LeoClinic.Application.DTOs.Patient;
 using LeoClinic.Application.Interfaces;
 using LeoClinic.Application.Services;
 using LeoClinic.Domain.Enums;
@@ -137,7 +136,7 @@ namespace LeoClinic.API.Controllers
         }
 
         [HttpPut("appointments/{appointmentId}/status")]
-        [Authorize(Roles = "Doctor")]
+        //[Authorize(Roles = "Doctor")]
         public async Task<IActionResult> UpdateAppointment(int appointmentId, [FromQuery] AppointmentStatus status)
         {
             var appointment = await service.UpdateAppointmentAsync(appointmentId, status);
@@ -154,7 +153,7 @@ namespace LeoClinic.API.Controllers
             return Ok(reviews);
         }
 
-        [HttpPost("{id}/ratings")]
+        [HttpPost("{id}/reviews")]
         public async Task<IActionResult> AddRating(int id, [FromBody] CreateRatingDTO dto)
         {
             if (dto == null)
