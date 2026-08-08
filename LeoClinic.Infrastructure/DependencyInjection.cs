@@ -21,6 +21,8 @@ namespace LeoClinic.Infrastructure
             services.AddScoped<IPatientService, PatientService>();
             services.AddScoped<IAppointmentRepository, AppointmentRepository>();
             services.AddScoped<IAppointmentService, AppointmentService>();
+            services.AddScoped<IRatingRepository, RatingRepository>();
+            services.AddScoped<IRatingService, RatingService>();
             services.AddScoped<IAvailabilityRepository, AvailabilitytRepository>();
 
             return services;
