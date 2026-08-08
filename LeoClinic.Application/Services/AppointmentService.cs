@@ -100,10 +100,6 @@ namespace LeoClinic.Application.Services
             };
         }
 
-        public async Task<bool> isAppointmentCompleted(int id)
-        {
-            return await _appointmentRepo.isAppointmentCompleted(id);
-        }
 
         public async Task<bool> RescheduleAppointment(int id, int newAvailabilityId)
         {
