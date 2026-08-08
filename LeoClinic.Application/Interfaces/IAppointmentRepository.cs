@@ -10,6 +10,6 @@ namespace LeoClinic.Application.Interfaces
         Task<Appointment?> GetAppointmentByIdAsync(int id);
         Task<Appointment> BookAppointmentAsync(Appointment appointment);
         Task UpdateAppointmentAsync(Appointment appointment);
-        Task<bool> isAppointmentCompleted(int id);
+        Task<bool> hasCompletedAppointment(int patientId, int doctorId);
     }
 }
