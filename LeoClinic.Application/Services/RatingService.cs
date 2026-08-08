@@ -70,7 +70,7 @@ namespace LeoClinic.Application.Services
                 CreatedAt = rating.CreatedAt
             };
         }
-        
+
 
         public async Task<bool> UpdateRating(int id, UpdateRatingDTO rating)
         {
