@@ -86,14 +86,9 @@ namespace LeoClinic.Infrastructure.Repositories
             return appointment;
         }
 
-        public async Task<bool> isAppointmentCompleted(int id)
+        public async Task<bool> hasCompletedAppointment(int patientId, int doctorId)
         {
-            var appointment = await _dbContext.Appointments.FindAsync(id);
-            if(appointment == null)
-            {
-                throw new KeyNotFoundException("Appointment not found");
-            }
-            return appointment.Status == AppointmentStatus.Completed;
+            return await _dbContext.Appointments.AnyAsync(a => a.PatientId == patientId && a.DoctorId == doctorId && a.Status == AppointmentStatus.Completed);
         }
 
         public async Task UpdateAppointmentAsync(Appointment appointment)
