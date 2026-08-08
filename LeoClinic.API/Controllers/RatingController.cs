@@ -16,28 +16,28 @@ namespace LeoClinic.API.Controllers
             _ratingService = ratingService;
         }
 
-        [HttpPost("{doctorId}")]
-        public async Task<IActionResult> AddReview(int doctorId, [FromBody] CreateRatingDTO dto)
+        //get rating by id
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetReviewById(int id)
         {
-            try
-            {
-                var result = await _ratingService.CreateRating(dto);
-                return CreatedAtAction(nameof(GetReviewById), new { id = result.Id }, result);
-            }
-            catch (InvalidOperationException inv)
-            {
-                return BadRequest(new { error = inv.Message });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { error = ex.Message });
-            }
+            var result = await _ratingService.GetRatingByIdAsync(id);
+            if (result == null)
+                return NotFound();
+            return Ok(result);
         }
+
+        
 
         //update rating
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateReview(int id, [FromBody] UpdateRatingDTO dto)
         {
+            if (dto == null)
+                return BadRequest(new { error = "Request body is required." });
+
+            if (!ModelState.IsValid)
+                return ValidationProblem(ModelState);
+
             var result = await _ratingService.UpdateRating(id, dto);
             if (!result)
                 return NotFound();
@@ -54,14 +54,5 @@ namespace LeoClinic.API.Controllers
             return NoContent();
         }
 
-        //get rating by id
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetReviewById(int id)
-        {
-            var result = await _ratingService.GetRatingByIdAsync(id);
-            if (result == null)
-                return NotFound();
-            return Ok(result);
-        }
     }
 }
