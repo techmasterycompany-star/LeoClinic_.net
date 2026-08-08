@@ -24,4 +24,11 @@
     <ProjectReference Include="..\LeoClinic.Shared\LeoClinic.Shared.csproj" />
   </ItemGroup>
 
+<<<<<<< HEAD
+=======
+  <ItemGroup>
+    <Folder Include="Configurations\" />
+  </ItemGroup>
+
+>>>>>>> 58cd926 (Implement admin management features)
 </Project>
