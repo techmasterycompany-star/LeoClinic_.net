@@ -12,10 +12,12 @@ namespace LeoClinic.API.Controllers
     {
         private readonly IPatientService _patientService;
         private readonly IAppointmentService _appointmentService;
-        public PatientController(IPatientService patientService, IAppointmentService appointmentService)
+        private readonly IRatingService _ratingService;
+        public PatientController(IPatientService patientService, IAppointmentService appointmentService, IRatingService ratingService)
         {
             _patientService = patientService;
             _appointmentService = appointmentService;
+            _ratingService = ratingService;
         }
 
         [HttpGet]
@@ -83,10 +85,62 @@ namespace LeoClinic.API.Controllers
         }
 
         [HttpGet("{id}/appointments")]
+        [Authorize(Roles = "Patient")]
         public async Task<IActionResult> GetAppointmentsByPatient(int id)
         {
             var appointments = await _appointmentService.GetAllByPatientAsync(id);
             return Ok(appointments);
+        }
+
+        [HttpPost("/review")]
+        [Authorize(Roles = "Patient")]
+        public async Task<IActionResult> CreateReview([FromBody] CreateRatingDTO dto)
+        {
+            if (dto == null)
+                return BadRequest(new { error = "Request body is required." });
+
+            if (!ModelState.IsValid)
+                return ValidationProblem(ModelState);
+
+            try
+            {
+                var result = await _ratingService.CreateRating(dto);
+                return CreatedAtAction("GetReviewById", "Rating", new { id = result.Id }, result);
+            }
+            catch (InvalidOperationException inv)
+            {
+                return BadRequest(new { error = inv.Message });
+            }
+            catch
+            {
+                return StatusCode(500, new { error = "An unexpected error occurred." });
+            }
+        }
+
+        [HttpPut("/review/{id}")]
+        [Authorize(Roles = "Patient")]
+        public async Task<IActionResult> UpdateReview(int id, [FromBody] UpdateRatingDTO dto)
+        {
+            if (dto == null)
+                return BadRequest(new { error = "Request body is required." });
+
+            if (!ModelState.IsValid)
+                return ValidationProblem(ModelState);
+
+            var result = await _ratingService.UpdateRating(id, dto);
+            if (!result)
+                return NotFound();
+            return NoContent();
+        }
+
+        [HttpDelete("/review/{id}")]
+        [Authorize(Roles = "Patient")]
+        public async Task<IActionResult> DeleteReview(int id)
+        {
+            var result = await _ratingService.DeleteRating(id);
+            if (!result)
+                return NotFound();
+            return NoContent();
         }
     }
 }
