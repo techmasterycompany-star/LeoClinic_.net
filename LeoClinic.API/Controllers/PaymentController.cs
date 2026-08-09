@@ -15,12 +15,12 @@ namespace LeoClinic.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> ProcessPayment([FromBody] CreatePaymentDto dto)
+        public async Task<IActionResult> CreatePaymentIntent([FromBody] CreatePaymentIntentDto dto)
         {
             try
             {
-                var payment = await _paymentService.ProcessPaymentAsync(dto);
-                return CreatedAtAction(nameof(GetById), new { id = payment.Id }, payment);
+                var intent = await _paymentService.CreatePaymentIntentAsync(dto);
+                return Ok(intent);
             }
             catch (KeyNotFoundException ex)
             {
@@ -29,6 +29,45 @@ namespace LeoClinic.API.Controllers
             catch (ArgumentException ex)
             {
                 return BadRequest(new { error = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
+        [HttpPost("{id}/confirm")]
+        public async Task<IActionResult> ConfirmPayment(int id, [FromBody] ConfirmPaymentDto dto)
+        {
+            try
+            {
+                var payment = await _paymentService.ConfirmPaymentAsync(id, dto.PaymentMethodId);
+                return Ok(payment);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { error = ex.Message });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
+        [HttpPost("webhook")]
+        public async Task<IActionResult> HandleWebhook()
+        {
+            var payload = await new StreamReader(HttpContext.Request.Body).ReadToEndAsync();
+            var signatureHeader = Request.Headers["Stripe-Signature"].ToString();
+
+            try
+            {
+                await _paymentService.HandleWebhookAsync(payload, signatureHeader);
+                return Ok();
             }
             catch (InvalidOperationException ex)
             {

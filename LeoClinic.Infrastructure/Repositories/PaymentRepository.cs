@@ -34,6 +34,13 @@ namespace LeoClinic.Infrastructure.Repositories
                 .FirstOrDefaultAsync(p => p.AppointmentId == appointmentId);
         }
 
+        public async Task<Payment?> GetByTransactionReferenceAsync(string transactionReference)
+        {
+            return await _dbContext.Payments
+                .Include(p => p.PatientProfile).ThenInclude(pp => pp.User)
+                .FirstOrDefaultAsync(p => p.TransactionReference == transactionReference);
+        }
+
         public async Task<IEnumerable<Payment>> GetByPatientAsync(int patientId)
         {
             return await _dbContext.Payments

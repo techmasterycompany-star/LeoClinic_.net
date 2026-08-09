@@ -10,21 +10,18 @@ namespace LeoClinic.Application.Services
         private readonly IPaymentRepository _paymentRepo;
         private readonly IAppointmentRepository _appointmentRepo;
         private readonly INotificationRepository _notificationRepo;
+        private readonly IPaymentGateway _paymentGateway;
 
-        public PaymentService(IPaymentRepository paymentRepo, IAppointmentRepository appointmentRepo, INotificationRepository notificationRepo)
+        public PaymentService(IPaymentRepository paymentRepo, IAppointmentRepository appointmentRepo, INotificationRepository notificationRepo, IPaymentGateway paymentGateway)
         {
             _paymentRepo = paymentRepo;
             _appointmentRepo = appointmentRepo;
             _notificationRepo = notificationRepo;
+            _paymentGateway = paymentGateway;
         }
 
-        public async Task<PaymentDto> ProcessPaymentAsync(CreatePaymentDto dto)
+        public async Task<PaymentIntentDto> CreatePaymentIntentAsync(CreatePaymentIntentDto dto)
         {
-            if (dto.Amount <= 0)
-            {
-                throw new ArgumentException("Payment amount must be greater than zero.");
-            }
-
             var appointment = await _appointmentRepo.GetAppointmentByIdAsync(dto.AppointmentId);
             if (appointment == null)
             {
@@ -37,36 +34,100 @@ namespace LeoClinic.Application.Services
                 throw new InvalidOperationException("This appointment already has a payment.");
             }
 
+            var amount = dto.Amount ?? appointment.DoctorProfile?.Price ?? 0;
+            if (amount <= 0)
+            {
+                throw new ArgumentException("Payment amount must be greater than zero.");
+            }
+
+            var intent = await _paymentGateway.CreatePaymentIntentAsync(new PaymentIntentRequest
+            {
+                AppointmentId = appointment.Id,
+                Amount = amount,
+                Currency = dto.Currency
+            });
+
             var payment = new Payment
             {
-                AppointmentId = dto.AppointmentId,
+                AppointmentId = appointment.Id,
                 PatientId = appointment.PatientId,
-                PaymentMethod = dto.PaymentMethod,
-                Amount = dto.Amount,
-                Status = PaymentStatus.Completed,
-                TransactionReference = GenerateTransactionReference(appointment.Id),
-                PaymentDate = DateTime.UtcNow,
+                PaymentMethod = "Stripe",
+                Amount = amount,
+                Status = PaymentStatus.Pending,
+                TransactionReference = intent.PaymentIntentId,
                 CreatedAt = DateTime.UtcNow
             };
 
             var created = await _paymentRepo.CreateAsync(payment);
 
-            var patientUserId = appointment.PatientProfile?.UserId;
-            if (patientUserId != null)
+            return new PaymentIntentDto
             {
-                await _notificationRepo.CreateAsync(new Notification
-                {
-                    UserId = patientUserId.Value,
-                    AppointmentId = appointment.Id,
-                    Message = $"Your payment of {created.Amount} has been received successfully. Reference: {created.TransactionReference}",
-                    Type = NotificationType.InApp,
-                    Status = NotificationStatus.Sent,
-                    SentAt = DateTime.UtcNow,
-                    CreatedAt = DateTime.UtcNow
-                });
+                PaymentId = created.Id,
+                PaymentIntentId = created.TransactionReference,
+                ClientSecret = intent.ClientSecret,
+                Amount = amount,
+                Currency = intent.Currency,
+                Status = created.Status
+            };
+        }
+
+        public async Task<PaymentDto> ConfirmPaymentAsync(int paymentId, string paymentMethodId)
+        {
+            if (string.IsNullOrWhiteSpace(paymentMethodId))
+            {
+                throw new ArgumentException("Payment method is required.");
             }
 
-            return ToDto(created);
+            var payment = await _paymentRepo.GetByIdAsync(paymentId);
+            if (payment == null)
+            {
+                throw new KeyNotFoundException("Payment not found.");
+            }
+
+            if (payment.Status == PaymentStatus.Completed)
+            {
+                return ToDto(payment);
+            }
+
+            if (payment.Status != PaymentStatus.Pending)
+            {
+                throw new InvalidOperationException($"Payment cannot be confirmed while in status {payment.Status}.");
+            }
+
+            var succeeded = await _paymentGateway.ConfirmPaymentAsync(payment.TransactionReference, paymentMethodId);
+            if (!succeeded)
+            {
+                payment.Status = PaymentStatus.Failed;
+                payment.UpdatedAt = DateTime.UtcNow;
+                await _paymentRepo.UpdateAsync(payment);
+                throw new InvalidOperationException("Payment was not successful.");
+            }
+
+            return await CompletePaymentAsync(payment);
+        }
+
+        public async Task HandleWebhookAsync(string payload, string signatureHeader)
+        {
+            var evt = await _paymentGateway.ParseWebhookEventAsync(payload, signatureHeader);
+
+            if (evt.Type == "payment_intent.succeeded")
+            {
+                var payment = await _paymentRepo.GetByTransactionReferenceAsync(evt.PaymentIntentId);
+                if (payment != null && payment.Status != PaymentStatus.Completed)
+                {
+                    await CompletePaymentAsync(payment);
+                }
+            }
+            else if (evt.Type == "payment_intent.payment_failed")
+            {
+                var payment = await _paymentRepo.GetByTransactionReferenceAsync(evt.PaymentIntentId);
+                if (payment != null && payment.Status == PaymentStatus.Pending)
+                {
+                    payment.Status = PaymentStatus.Failed;
+                    payment.UpdatedAt = DateTime.UtcNow;
+                    await _paymentRepo.UpdateAsync(payment);
+                }
+            }
         }
 
         public async Task<PaymentDto?> GetByIdAsync(int id)
@@ -118,15 +179,41 @@ namespace LeoClinic.Application.Services
                 throw new InvalidOperationException("Only completed payments can be refunded.");
             }
 
+            var refunded = await _paymentGateway.RefundAsync(payment.TransactionReference);
+            if (!refunded)
+            {
+                throw new InvalidOperationException("Refund could not be processed.");
+            }
+
             payment.Status = PaymentStatus.Refunded;
             payment.UpdatedAt = DateTime.UtcNow;
             await _paymentRepo.UpdateAsync(payment);
             return ToDto(payment);
         }
 
-        private static string GenerateTransactionReference(int appointmentId)
+        private async Task<PaymentDto> CompletePaymentAsync(Payment payment)
         {
-            return $"PAY-{appointmentId}-{Guid.NewGuid():N}".ToUpperInvariant();
+            payment.Status = PaymentStatus.Completed;
+            payment.PaymentDate = DateTime.UtcNow;
+            payment.UpdatedAt = DateTime.UtcNow;
+            await _paymentRepo.UpdateAsync(payment);
+
+            var patientUserId = payment.PatientProfile?.UserId;
+            if (patientUserId != null)
+            {
+                await _notificationRepo.CreateAsync(new Notification
+                {
+                    UserId = patientUserId.Value,
+                    AppointmentId = payment.AppointmentId,
+                    Message = $"Your payment of {payment.Amount} has been received successfully. Reference: {payment.TransactionReference}",
+                    Type = NotificationType.InApp,
+                    Status = NotificationStatus.Sent,
+                    SentAt = DateTime.UtcNow,
+                    CreatedAt = DateTime.UtcNow
+                });
+            }
+
+            return ToDto(payment);
         }
 
         private static PaymentDto ToDto(Payment payment)
