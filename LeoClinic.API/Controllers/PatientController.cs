@@ -1,8 +1,8 @@
 ﻿using LeoClinic.Application.DTOs.Patient;
 using LeoClinic.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace LeoClinic.API.Controllers
 {
@@ -47,49 +47,136 @@ namespace LeoClinic.API.Controllers
         [Authorize(Roles = "Admin,Patient")]
         public async Task<IActionResult> CreatePatient([FromBody] CreatePatientDTO dto)
         {
-            var patient = await _patientService.CreatePatientProfileAsync(dto);
-            return CreatedAtAction(nameof(GetPatientProfile), new { id = patient.Id }, patient);
+            if (dto is null)
+                return BadRequest(new { error = "Request body is required." });
+
+            if (!ModelState.IsValid)
+                return ValidationProblem(ModelState);
+
+            try
+            {
+                var patient = await _patientService.CreatePatientProfileAsync(dto);
+                return CreatedAtAction(nameof(GetPatientProfile), new { id = patient.Id }, patient);
+            }
+            catch (KeyNotFoundException knf)
+            {
+                return NotFound(new { error = knf.Message });
+            }
+            catch (InvalidOperationException inv)
+            {
+                return BadRequest(new { error = inv.Message });
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { error = "An unexpected error occurred." });
+            }
         }
 
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin,Patient")]
         public async Task<IActionResult> UpdatePatient(int id, [FromBody] UpdatePatientProfileDTO dto)
         {
-            var result = await _patientService.UpdatePatientProfileAsync(id, dto);
-            if (!result)
-                return NotFound();
+            if (dto is null)
+                return BadRequest(new { error = "Request body is required." });
 
-            return NoContent();
+            if (!ModelState.IsValid)
+                return ValidationProblem(ModelState);
+
+            try
+            {
+                var result = await _patientService.UpdatePatientProfileAsync(id, dto);
+                if (!result)
+                    return NotFound();
+
+                return NoContent();
+            }
+            catch (KeyNotFoundException knf)
+            {
+                return NotFound(new { error = knf.Message });
+            }
+            catch (InvalidOperationException inv)
+            {
+                return BadRequest(new { error = inv.Message });
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { error = "An unexpected error occurred." });
+            }
         }
 
         [HttpDelete("{id}")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeletePatient(int id)
         {
-            var result = await _patientService.DeletePatientAsync(id);
-            if (!result)
-                return NotFound();
+            try
+            {
+                var result = await _patientService.DeletePatientAsync(id);
+                if (!result)
+                    return NotFound();
 
-            return NoContent();
+                return NoContent();
+            }
+            catch (KeyNotFoundException knf)
+            {
+                return NotFound(new { error = knf.Message });
+            }
+            catch (InvalidOperationException inv)
+            {
+                return BadRequest(new { error = inv.Message });
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { error = "An unexpected error occurred." });
+            }
         }
 
         [HttpPut("{id}/approve")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ApprovePatient(int id)
         {
-            var result = await _patientService.ApprovePatientAsync(id);
-            if (!result)
-                return NotFound();
+            try
+            {
+                var result = await _patientService.ApprovePatientAsync(id);
+                if (!result)
+                    return NotFound();
 
-            return Ok(new { message = "Patient approved successfully" });
+                return Ok(new { message = "Patient approved successfully" });
+            }
+            catch (KeyNotFoundException knf)
+            {
+                return NotFound(new { error = knf.Message });
+            }
+            catch (InvalidOperationException inv)
+            {
+                return BadRequest(new { error = inv.Message });
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { error = "An unexpected error occurred." });
+            }
         }
 
         [HttpGet("{id}/appointments")]
         [Authorize(Roles = "Patient")]
         public async Task<IActionResult> GetAppointmentsByPatient(int id)
         {
-            var appointments = await _appointmentService.GetAllByPatientAsync(id);
-            return Ok(appointments);
+            try
+            {
+                var appointments = await _appointmentService.GetAllByPatientAsync(id);
+                return Ok(appointments);
+            }
+            catch (KeyNotFoundException knf)
+            {
+                return NotFound(new { error = knf.Message });
+            }
+            catch (InvalidOperationException inv)
+            {
+                return BadRequest(new { error = inv.Message });
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { error = "An unexpected error occurred." });
+            }
         }
 
         [HttpPost("/review")]
@@ -107,9 +194,17 @@ namespace LeoClinic.API.Controllers
                 var result = await _ratingService.CreateRating(dto);
                 return CreatedAtAction("GetReviewById", "Rating", new { id = result.Id }, result);
             }
+            catch (KeyNotFoundException knf)
+            {
+                return NotFound(new { error = knf.Message });
+            }
             catch (InvalidOperationException inv)
             {
                 return BadRequest(new { error = inv.Message });
+            }
+            catch (DbUpdateException)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { error = "A database error occurred." });
             }
             catch
             {
@@ -127,20 +222,52 @@ namespace LeoClinic.API.Controllers
             if (!ModelState.IsValid)
                 return ValidationProblem(ModelState);
 
-            var result = await _ratingService.UpdateRating(id, dto);
-            if (!result)
-                return NotFound();
-            return NoContent();
+            try
+            {
+                var result = await _ratingService.UpdateRating(id, dto);
+                if (!result)
+                    return NotFound();
+
+                return NoContent();
+            }
+            catch (KeyNotFoundException knf)
+            {
+                return NotFound(new { error = knf.Message });
+            }
+            catch (InvalidOperationException inv)
+            {
+                return BadRequest(new { error = inv.Message });
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { error = "An unexpected error occurred." });
+            }
         }
 
         [HttpDelete("/review/{id}")]
         [Authorize(Roles = "Patient")]
         public async Task<IActionResult> DeleteReview(int id)
         {
-            var result = await _ratingService.DeleteRating(id);
-            if (!result)
-                return NotFound();
-            return NoContent();
+            try
+            {
+                var result = await _ratingService.DeleteRating(id);
+                if (!result)
+                    return NotFound();
+
+                return NoContent();
+            }
+            catch (KeyNotFoundException knf)
+            {
+                return NotFound(new { error = knf.Message });
+            }
+            catch (InvalidOperationException inv)
+            {
+                return BadRequest(new { error = inv.Message });
+            }
+            catch
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { error = "An unexpected error occurred." });
+            }
         }
     }
 }
