@@ -12,31 +12,36 @@ namespace LeoClinic.Infrastructure.Repositories
         {
             this.context = context;
         }
-        //public async Task<IEnumerable<DoctorProfile>> SearchAsync(string? specialty, int? locationId, string? name)
-        //{
-        //    var query = context.DoctorProfiles
-        //        .Include(d => d.User)
-        //        .Include(d => d.Speciality)
-        //        .Include(d => d.DoctorLocations).ThenInclude(dl => dl.Location)
-        //        .AsQueryable();
+        public async Task<IEnumerable<DoctorProfile>> SearchAsync(string? specialty, int? locationId, string? name, bool? isApproved)
+        {
+            var query = context.DoctorProfiles
+                .Include(d => d.User)
+                .Include(d => d.Speciality)
+                .Include(d => d.DoctorLocations).ThenInclude(dl => dl.Location)
+                .AsQueryable();
 
-        //    if (!string.IsNullOrEmpty(specialty))
-        //    {
-        //        query = query.Where(d => d.Speciality.Name.Contains(specialty));
-        //    }
+            if (!string.IsNullOrEmpty(specialty))
+            {
+                query = query.Where(d => d.Speciality.Name.ToLower().Contains(specialty.ToLower()));
+            }
 
-        //    if (locationId.HasValue)
-        //    {
-        //        query = query.Where(d => d.DoctorLocations.Any(dl => dl.LocationId == locationId.Value));
-        //    }
+            if (locationId.HasValue)
+            {
+                query = query.Where(d => d.DoctorLocations.Any(dl => dl.LocationId == locationId.Value));
+            }
 
-        //    if (!string.IsNullOrEmpty(name))
-        //    {
-        //        query = query.Where(d => d.User.FirstName.Contains(name) || d.User.LastName.Contains(name));
-        //    }
+            if (!string.IsNullOrEmpty(name))
+            {
+                query = query.Where(d => d.User.FirstName.ToLower().Contains(name.ToLower()) || d.User.LastName.ToLower().Contains(name.ToLower()));
+            }
 
-        //    return await query.ToListAsync();
-        //}
+            if (isApproved.HasValue)
+            {
+                query = query.Where(d => d.IsApproved == isApproved.Value);
+            }
+
+            return await query.ToListAsync();
+        }
         public async Task<Availability> AddSlotAsync(Availability slot)
         {
             await context.Availabilities.AddAsync(slot);

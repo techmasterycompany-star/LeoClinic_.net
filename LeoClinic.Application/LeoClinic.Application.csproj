@@ -24,9 +24,4 @@
     <ProjectReference Include="..\LeoClinic.Shared\LeoClinic.Shared.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="DTOs\" />
-    <Folder Include="Services\" />
-  </ItemGroup>
-
 </Project>

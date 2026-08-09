@@ -55,7 +55,8 @@ namespace LeoClinic.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AvailabilityId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[Status] <> 3 AND [Status] <> 4");
 
                     b.HasIndex("DoctorId");
 
@@ -160,10 +161,10 @@ namespace LeoClinic.Infrastructure.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(10,2)");
 
-                    b.Property<int?>("SpecialityId")
+                    b.Property<int>("SpecialityId")
                         .HasColumnType("int");
 
-                    b.Property<int>("SpecialtyId")
+                    b.Property<int?>("SpecialityId1")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -176,7 +177,7 @@ namespace LeoClinic.Infrastructure.Migrations
 
                     b.HasIndex("SpecialityId");
 
-                    b.HasIndex("SpecialtyId");
+                    b.HasIndex("SpecialityId1");
 
                     b.HasIndex("UserId")
                         .IsUnique();
@@ -237,12 +238,27 @@ namespace LeoClinic.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Message")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime?>("ReadAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("RetryCount")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("SentAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -327,6 +343,14 @@ namespace LeoClinic.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TransactionReference")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -496,9 +520,9 @@ namespace LeoClinic.Infrastructure.Migrations
             modelBuilder.Entity("LeoClinic.Domain.Entities.Appointment", b =>
                 {
                     b.HasOne("LeoClinic.Domain.Entities.Availability", "Availability")
-                        .WithOne("Appointment")
-                        .HasForeignKey("LeoClinic.Domain.Entities.Appointment", "AvailabilityId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .WithMany("Appointments")
+                        .HasForeignKey("AvailabilityId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("LeoClinic.Domain.Entities.DoctorProfile", "DoctorProfile")
@@ -560,15 +584,15 @@ namespace LeoClinic.Infrastructure.Migrations
 
             modelBuilder.Entity("LeoClinic.Domain.Entities.DoctorProfile", b =>
                 {
-                    b.HasOne("LeoClinic.Domain.Entities.Speciality", null)
-                        .WithMany("DoctorProfiles")
-                        .HasForeignKey("SpecialityId");
-
                     b.HasOne("LeoClinic.Domain.Entities.Speciality", "Speciality")
                         .WithMany()
-                        .HasForeignKey("SpecialtyId")
+                        .HasForeignKey("SpecialityId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("LeoClinic.Domain.Entities.Speciality", null)
+                        .WithMany("DoctorProfiles")
+                        .HasForeignKey("SpecialityId1");
 
                     b.HasOne("LeoClinic.Domain.Entities.User", "User")
                         .WithOne("DoctorProfile")
@@ -668,7 +692,7 @@ namespace LeoClinic.Infrastructure.Migrations
 
             modelBuilder.Entity("LeoClinic.Domain.Entities.Availability", b =>
                 {
-                    b.Navigation("Appointment");
+                    b.Navigation("Appointments");
                 });
 
             modelBuilder.Entity("LeoClinic.Domain.Entities.DoctorProfile", b =>

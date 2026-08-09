@@ -1,4 +1,5 @@
 ﻿using LeoClinic.Application.DTOs.Doctor;
+using LeoClinic.Application.DTOs.Patient;
 using LeoClinic.Application.Interfaces;
 using LeoClinic.Application.Services;
 using LeoClinic.Domain.Enums;
@@ -21,6 +22,13 @@ namespace LeoClinic.API.Controllers
         public async Task<IActionResult> GetAllDoctors()
         {
             var doctors = await service.GetAllDoctorsAsync();
+            return Ok(doctors);
+        }
+
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchDoctor(string? specialty, int? locationId, string? name, bool? isApproved)
+        {
+            var doctors = await service.SearchDoctorAsync(specialty, locationId, name, isApproved);
             return Ok(doctors);
         }
 
@@ -126,7 +134,6 @@ namespace LeoClinic.API.Controllers
         }
 
         [HttpPut("appointments/{appointmentId}/status")]
-        [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> UpdateAppointment(int appointmentId, [FromQuery] AppointmentStatus status)
         {
             var appointment = await service.UpdateAppointmentAsync(appointmentId, status);
