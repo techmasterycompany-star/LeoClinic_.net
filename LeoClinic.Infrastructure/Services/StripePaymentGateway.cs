@@ -23,7 +23,11 @@ namespace LeoClinic.Infrastructure.Services
                 {
                     Amount = (long)Math.Round(request.Amount * 100),
                     Currency = request.Currency,
-                    AutomaticPaymentMethods = new PaymentIntentAutomaticPaymentMethodsOptions { Enabled = true },
+                    AutomaticPaymentMethods = new PaymentIntentAutomaticPaymentMethodsOptions
+                    {
+                        Enabled = true,
+                        AllowRedirects = "never"
+                    },
                     Metadata = new Dictionary<string, string> { ["appointment_id"] = request.AppointmentId.ToString() }
                 };
 
