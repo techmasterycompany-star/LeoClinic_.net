@@ -5,7 +5,6 @@ namespace LeoClinic.Application.DTOs
     public class PatientRegisterDto
     {
         [Required]
-        [Phone]
         public string ContactNumber { get; set; } = string.Empty;
         public DateTime DateOfBirth { get; set; }
         [Required]
