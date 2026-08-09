@@ -1,9 +1,9 @@
 namespace LeoClinic.Application.DTOs.Payment
 {
-    public class CreatePaymentDto
+    public class PaymentIntentRequest
     {
         public int AppointmentId { get; set; }
-        public string PaymentMethod { get; set; } = string.Empty;
         public decimal Amount { get; set; }
+        public string Currency { get; set; } = "usd";
     }
 }
