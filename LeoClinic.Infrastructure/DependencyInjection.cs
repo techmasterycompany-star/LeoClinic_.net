@@ -2,6 +2,7 @@ using LeoClinic.Application.Interfaces;
 using LeoClinic.Application.Services;
 using LeoClinic.Infrastructure.Data;
 using LeoClinic.Infrastructure.Repositories;
+using LeoClinic.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,6 +15,9 @@ namespace LeoClinic.Infrastructure
         {
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+
+            services.Configure<StripeSettings>(configuration.GetSection("Stripe"));
+            services.AddScoped<IPaymentGateway, StripePaymentGateway>();
 
             services.AddScoped<IDoctorRepository, DoctorRepository>();
             services.AddScoped<IDoctorService, DoctorService>();
