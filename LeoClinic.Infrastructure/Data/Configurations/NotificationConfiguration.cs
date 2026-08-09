@@ -13,8 +13,16 @@ public class NotificationConfiguration : IEntityTypeConfiguration<Notification>
         builder.Property(n => n.Message)
             .IsRequired();
 
+        builder.Property(n => n.Type)
+            .IsRequired();
+
+        builder.Property(n => n.Status)
+            .IsRequired();
+
         builder.Property(n => n.SentAt)
             .IsRequired();
+
+        builder.HasIndex(n => n.UserId);
 
         builder.HasOne(n => n.User)
             .WithMany(u => u.Notifications)
