@@ -14,12 +14,21 @@ public class PaymentConfiguration : IEntityTypeConfiguration<Payment>
             .IsRequired()
             .HasMaxLength(50);
 
+        builder.Property(p => p.Status)
+            .IsRequired();
+
+        builder.Property(p => p.TransactionReference)
+            .HasMaxLength(100);
+
         builder.Property(p => p.PaymentDate)
             .IsRequired();
 
         builder.Property(p => p.Amount)
             .IsRequired()
             .HasColumnType("decimal(10,2)");
+
+        builder.HasIndex(p => p.AppointmentId)
+            .IsUnique();
 
         builder.HasOne(p => p.PatientProfile)
             .WithMany(pt => pt.Payments)

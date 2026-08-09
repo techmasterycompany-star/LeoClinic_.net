@@ -1,11 +1,14 @@
 ﻿using LeoClinic.Domain.Common;
+using LeoClinic.Domain.Enums;
 
 namespace LeoClinic.Domain.Entities
 {
     public class Payment : BaseEntity
     {
         public string PaymentMethod { get; set; } = string.Empty;
-        public DateTime PaymentDate { get; set; }
+        public PaymentStatus Status { get; set; } = PaymentStatus.Pending;
+        public string TransactionReference { get; set; } = string.Empty;
+        public DateTime PaymentDate { get; set; } = DateTime.UtcNow;
         public decimal Amount { get; set; }
 
 
