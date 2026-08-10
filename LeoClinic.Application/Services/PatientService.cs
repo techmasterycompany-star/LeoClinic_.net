@@ -38,7 +38,6 @@ namespace LeoClinic.Application.Services
                 ContactNumber = patient.ContactNumber,
                 DateOfBirth = patient.DateOfBirth,
                 IsApproved = patient.IsApproved,
-                DateJoined = patient.User?.DateJoined ?? DateTime.UtcNow,
                 FirstName = patient.User?.FirstName ?? string.Empty,
                 LastName = patient.User?.LastName ?? string.Empty,
                 Email = patient.User?.Email ?? string.Empty,
@@ -76,7 +75,6 @@ namespace LeoClinic.Application.Services
                 FirstName = p.User.FirstName,
                 LastName = p.User.LastName,
                 Email = p.User.Email,
-                DateJoined = p.User.DateJoined,
                 IsBlocked = p.User.IsBlocked,
             }).ToList();
             return results;
@@ -96,7 +94,6 @@ namespace LeoClinic.Application.Services
                 FirstName = p.User.FirstName,
                 LastName = p.User.LastName,
                 Email = p.User.Email,
-                DateJoined = p.User.DateJoined,
                 IsBlocked = p.User.IsBlocked,
             }).ToList();
             return results;
@@ -115,7 +112,6 @@ namespace LeoClinic.Application.Services
                 FirstName = patient.User.FirstName,
                 LastName = patient.User.LastName,
                 Email = patient.User.Email,
-                DateJoined = patient.User.DateJoined,
                 IsBlocked = patient.User.IsBlocked,
             };
             return result;

@@ -89,7 +89,6 @@ namespace LeoClinic.Application.Service
                 Specialty = d.Speciality.Name,
                 Price = d.Price,
                 Bio = d.Bio,
-                DateJoined = d.User.DateJoined
             });
         }
         public async Task<bool> ApproveDoctorAsync(int id)
@@ -266,7 +265,6 @@ namespace LeoClinic.Application.Service
                 LastName = u.LastName,
                 Role = u.Role,
                 IsBlocked = u.IsBlocked,
-                DateJoined = u.DateJoined
             });
         }
 
@@ -285,7 +283,6 @@ namespace LeoClinic.Application.Service
                 LastName = user.LastName,
                 Role = user.Role,
                 IsBlocked = user.IsBlocked,
-                DateJoined = user.DateJoined
             };
         }
 
