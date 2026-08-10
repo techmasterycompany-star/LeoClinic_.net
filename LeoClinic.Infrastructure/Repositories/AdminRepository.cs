@@ -270,7 +270,10 @@ namespace LeoClinic.Infrastructure.Repositories
 
         public async Task<Payment?> GetPaymentByIdAsync(int id)
         {
-           return await _context.Payments.FindAsync(id);
+           return await _context.Payments
+                .Include(x=>x.Appointment)
+                .ThenInclude(p=>p.Payment)
+                .Include(p=>p.PatientProfile).FirstOrDefaultAsync(p => p.Id == id);
         }
         public async Task<IEnumerable<Rating>> GetRatingsAsync(int? doctorId,int? patientId,int? rate)
         {
