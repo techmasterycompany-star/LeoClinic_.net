@@ -2,13 +2,15 @@
 using LeoClinic.Application.Interfaces;
 using LeoClinic.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
+
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace LeoClinic.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-   // [Authorize(Roles = "Admin")]
+  //  [Authorize(Roles = "Admin")]
 
     public class AdminController : ControllerBase
     {
@@ -80,7 +82,7 @@ namespace LeoClinic.API.Controllers
             var approved = await _adminService.ApproveDoctorAsync(id);
 
             if (!approved)
-                return NotFound();
+                return NotFound("Doctor not found or already approved");
 
             return NoContent();
         }
@@ -91,7 +93,7 @@ namespace LeoClinic.API.Controllers
             var rejected = await _adminService.RejectDoctorAsync(id);
 
             if (!rejected)
-                return NotFound();
+                return NotFound("Doctor not found or already rejected");
 
             return NoContent();
         }

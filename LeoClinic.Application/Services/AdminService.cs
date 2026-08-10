@@ -2,6 +2,7 @@
 using LeoClinic.Application.Interfaces;
 using LeoClinic.Domain.Entities;
 using LeoClinic.Domain.Enums;
+using Microsoft.EntityFrameworkCore;
 
 namespace LeoClinic.Application.Service
 {
@@ -63,6 +64,7 @@ namespace LeoClinic.Application.Service
         }
         public async Task<bool> DeleteSpecialtyAsync(int id)
         {
+            try { 
             var specialty = await _adminRepository.GetSpecialtyByIdAsync(id);
 
             if (specialty == null)
@@ -71,6 +73,9 @@ namespace LeoClinic.Application.Service
             await _adminRepository.DeleteSpecialtyAsync(id);
 
             return true;
+            }
+            catch (DbUpdateException) { throw new InvalidOperationException(
+                "This specialty is related to one or more doctors. Please remove or reassign the doctors first."); }
         }
 
 
@@ -89,6 +94,7 @@ namespace LeoClinic.Application.Service
                 Specialty = d.Speciality.Name,
                 Price = d.Price,
                 Bio = d.Bio,
+                DateJoined = d.User.DateJoined
             });
         }
         public async Task<bool> ApproveDoctorAsync(int id)
@@ -265,6 +271,7 @@ namespace LeoClinic.Application.Service
                 LastName = u.LastName,
                 Role = u.Role,
                 IsBlocked = u.IsBlocked,
+                DateJoined = u.DateJoined
             });
         }
 
@@ -283,6 +290,7 @@ namespace LeoClinic.Application.Service
                 LastName = user.LastName,
                 Role = user.Role,
                 IsBlocked = user.IsBlocked,
+                DateJoined = user.DateJoined
             };
         }
 
