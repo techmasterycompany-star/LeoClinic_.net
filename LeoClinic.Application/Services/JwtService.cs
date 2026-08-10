@@ -21,6 +21,7 @@ namespace LeoClinic.Application.Services
         public (string Token, DateTime ExpiresAt) GenerateAccessToken(User user)
         {
             var key = _configuration["Jwt:Key"];
+
             var issuer = _configuration["Jwt:Issuer"];
             var audience = _configuration["Jwt:Audience"];
 

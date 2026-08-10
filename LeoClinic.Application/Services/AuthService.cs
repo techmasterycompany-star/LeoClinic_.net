@@ -312,5 +312,116 @@ namespace LeoClinic.Application.Services
                 }
             }
         }
+
+        public async Task<string> ForgotPassword(ForgotPasswordRequestDTO request)
+        {
+            if (string.IsNullOrWhiteSpace(request.Email))
+            {
+                throw new ArgumentException("Email is required.");
+            }
+
+            var user = await _userRepository.GetByEmailAsync(request.Email);
+            if (user == null)
+            {
+                throw new ArgumentException("User with this email was not found.");
+            }
+
+            var code = Random.Shared.Next(100000, 999999).ToString();
+            var verificationCode = new VerificationCode
+            {
+                UserId = user.Id,
+                Token = code,
+                Type = VerificationType.PasswordReset,
+                ExpiresAt = DateTime.UtcNow.AddMinutes(15),
+                UsedAt = null
+            };
+
+            await _verificationCodeRepository.AddAsync(verificationCode);
+            await _verificationCodeRepository.SaveChangesAsync();
+
+            await _emailService.SendEmailAsync(
+                user.Email,
+                "LeoClinic - Password Reset Code",
+                $"<h3>Hello {user.FirstName},</h3><p>Your password reset code is: <strong>{code}</strong></p><p>This code will expire in 15 minutes. If you did not request a password reset, please ignore this email.</p>"
+            );
+
+            return "Password reset code has been sent to your email.";
+        }
+
+        public async Task<string> VerifyResetCode(VerifyResetCodeRequestDTO request)
+        {
+            if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Code))
+            {
+                throw new ArgumentException("Email and reset code are required.");
+            }
+
+            var user = await _userRepository.GetByEmailAsync(request.Email);
+            if (user == null)
+            {
+                throw new ArgumentException("User with this email was not found.");
+            }
+
+            var verificationCode = await _verificationCodeRepository.GetLatestCodeAsync(user.Id, request.Code, VerificationType.PasswordReset);
+            if (verificationCode == null)
+            {
+                throw new ArgumentException("Invalid reset code.");
+            }
+
+            if (verificationCode.UsedAt != null)
+            {
+                throw new InvalidOperationException("Reset code has already been used.");
+            }
+
+            if (verificationCode.ExpiresAt < DateTime.UtcNow)
+            {
+                throw new InvalidOperationException("Reset code has expired.");
+            }
+
+            return "Reset code is valid. You can now reset your password.";
+        }
+
+        public async Task<string> ResetPassword(ResetPasswordRequestDTO request)
+        {
+            if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Code) || string.IsNullOrWhiteSpace(request.NewPassword))
+            {
+                throw new ArgumentException("Email, code, and new password are required.");
+            }
+
+            if (request.NewPassword != request.ConfirmPassword)
+            {
+                throw new ArgumentException("Password and Confirmation Password do not match.");
+            }
+
+            var user = await _userRepository.GetByEmailAsync(request.Email);
+            if (user == null)
+            {
+                throw new ArgumentException("User with this email was not found.");
+            }
+
+            var verificationCode = await _verificationCodeRepository.GetLatestCodeAsync(user.Id, request.Code, VerificationType.PasswordReset);
+            if (verificationCode == null)
+            {
+                throw new ArgumentException("Invalid reset code.");
+            }
+
+            if (verificationCode.UsedAt != null)
+            {
+                throw new InvalidOperationException("Reset code has already been used.");
+            }
+
+            if (verificationCode.ExpiresAt < DateTime.UtcNow)
+            {
+                throw new InvalidOperationException("Reset code has expired.");
+            }
+
+            user.PasswordHash = _passwordService.HashPassword(request.NewPassword);
+            verificationCode.UsedAt = DateTime.UtcNow;
+
+            await _verificationCodeRepository.SaveChangesAsync();
+            await _userRepository.SaveChangesAsync();
+
+            return "Password has been reset successfully. You can now log in with your new password.";
+        }
+
     }
 }
