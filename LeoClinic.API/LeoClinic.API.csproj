@@ -8,7 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include=".env" />
+    <Compile Remove="Configurations\**" />
+    <Content Remove="Configurations\**" />
+    <EmbeddedResource Remove="Configurations\**" />
+    <None Remove="Configurations\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,11 +30,6 @@
     <ProjectReference Include="..\LeoClinic.Application\LeoClinic.Application.csproj" />
     <ProjectReference Include="..\LeoClinic.Infrastructure\LeoClinic.Infrastructure.csproj" />
     <ProjectReference Include="..\LeoClinic.Shared\LeoClinic.Shared.csproj" />
-  </ItemGroup>
-
-
-  <ItemGroup>
-    <Folder Include="Configurations\" />
   </ItemGroup>
 
 </Project>
