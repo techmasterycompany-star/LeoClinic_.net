@@ -30,10 +30,7 @@
 
   <ItemGroup>
     <Folder Include="Data\Configurations\" />
-<<<<<<< HEAD
     <Folder Include="Services\" />
-=======
->>>>>>> 58cd926 (Implement admin management features)
   </ItemGroup>
 
 </Project>
