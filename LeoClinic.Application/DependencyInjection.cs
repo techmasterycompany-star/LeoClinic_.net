@@ -1,6 +1,7 @@
 using FluentValidation;
 using LeoClinic.Application.DTOs;
 using LeoClinic.Application.Interfaces;
+using LeoClinic.Application.Service;
 using LeoClinic.Application.Services;
 using Microsoft.Extensions.Configuration;
 using LeoClinic.Application.Interfaces;

@@ -13,6 +13,8 @@ namespace LeoClinic.Domain.Entities
         public bool IsBlocked { get; set; }
         public bool EmailConfirmed { get; set; }
 
+        //public DateTime DateJoined { get; set; } = DateTime.UtcNow;
+
 
         public DoctorProfile? DoctorProfile { get; set; }
         public PatientProfile? PatientProfile { get; set; }
