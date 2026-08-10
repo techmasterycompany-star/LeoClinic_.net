@@ -1,5 +1,4 @@
 using LeoClinic.Application.DTOs;
-using System;
 using System.Threading.Tasks;
 
 namespace LeoClinic.Application.Interfaces
@@ -12,5 +11,8 @@ namespace LeoClinic.Application.Interfaces
         Task<string> ResendVerificationCode(ResendCodeRequestDTO request);
         Task<AuthResponseDTO> RefreshToken(string refreshToken);
         Task Logout(string? refreshToken);
+        Task<string> ForgotPassword(ForgotPasswordRequestDTO request);
+        Task<string> VerifyResetCode(VerifyResetCodeRequestDTO request);
+        Task<string> ResetPassword(ResetPasswordRequestDTO request);
     }
 }

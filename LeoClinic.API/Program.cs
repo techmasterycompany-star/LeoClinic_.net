@@ -18,6 +18,7 @@ builder.Services.AddOpenApi();
 
 var jwtKey = builder.Configuration["Jwt:Key"];
 
+
 var jwtIssuer = builder.Configuration["Jwt:Issuer"];
 var jwtAudience = builder.Configuration["Jwt:Audience"];
 

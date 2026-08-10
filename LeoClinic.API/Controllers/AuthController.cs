@@ -194,5 +194,97 @@ namespace LeoClinic.API.Controllers
                 return StatusCode(500, new { Message = "An unexpected error occurred during logout.", Detail = ex.Message });
             }
         }
+
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequestDTO request)
+        {
+            if (request == null)
+            {
+                return BadRequest(new { Message = "Request data is required." });
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { Message = "Invalid input data.", Errors = ModelState });
+            }
+
+            try
+            {
+                var message = await _authService.ForgotPassword(request);
+                return Ok(new { Message = message });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An unexpected error occurred during forgot password request.", Detail = ex.Message });
+            }
+        }
+
+        [HttpPost("verify-reset-code")]
+        public async Task<IActionResult> VerifyResetCode([FromBody] VerifyResetCodeRequestDTO request)
+        {
+            if (request == null)
+            {
+                return BadRequest(new { Message = "Request data is required." });
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { Message = "Invalid input data.", Errors = ModelState });
+            }
+
+            try
+            {
+                var message = await _authService.VerifyResetCode(request);
+                return Ok(new { Message = message });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An unexpected error occurred during reset code verification.", Detail = ex.Message });
+            }
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequestDTO request)
+        {
+            if (request == null)
+            {
+                return BadRequest(new { Message = "Request data is required." });
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { Message = "Invalid input data.", Errors = ModelState });
+            }
+
+            try
+            {
+                var message = await _authService.ResetPassword(request);
+                return Ok(new { Message = message });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An unexpected error occurred during password reset.", Detail = ex.Message });
+            }
+        }
     }
 }
