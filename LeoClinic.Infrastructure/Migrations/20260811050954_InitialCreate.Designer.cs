@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LeoClinic.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260809145235_AddNotificationAndPaymentStatus")]
-    partial class AddNotificationAndPaymentStatus
+    [Migration("20260811050954_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -167,9 +167,6 @@ namespace LeoClinic.Infrastructure.Migrations
                     b.Property<int>("SpecialityId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("SpecialityId1")
-                        .HasColumnType("int");
-
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
@@ -179,8 +176,6 @@ namespace LeoClinic.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("SpecialityId");
-
-                    b.HasIndex("SpecialityId1");
 
                     b.HasIndex("UserId")
                         .IsUnique();
@@ -404,6 +399,43 @@ namespace LeoClinic.Infrastructure.Migrations
                     b.ToTable("Ratings");
                 });
 
+            modelBuilder.Entity("LeoClinic.Domain.Entities.RefreshToken", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("RevokedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Token");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RefreshTokens");
+                });
+
             modelBuilder.Entity("LeoClinic.Domain.Entities.Speciality", b =>
                 {
                     b.Property<int>("Id")
@@ -430,6 +462,43 @@ namespace LeoClinic.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Specialties");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "General medical practice",
+                            Name = "General Practice"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Heart and cardiovascular system",
+                            Name = "Cardiology"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Skin, hair, and nails",
+                            Name = "Dermatology"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Children's health",
+                            Name = "Pediatrics"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            Description = "Bones, joints, and muscles",
+                            Name = "Orthopedics"
+                        });
                 });
 
             modelBuilder.Entity("LeoClinic.Domain.Entities.User", b =>
@@ -443,13 +512,13 @@ namespace LeoClinic.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DateJoined")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -588,14 +657,10 @@ namespace LeoClinic.Infrastructure.Migrations
             modelBuilder.Entity("LeoClinic.Domain.Entities.DoctorProfile", b =>
                 {
                     b.HasOne("LeoClinic.Domain.Entities.Speciality", "Speciality")
-                        .WithMany()
+                        .WithMany("DoctorProfiles")
                         .HasForeignKey("SpecialityId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.HasOne("LeoClinic.Domain.Entities.Speciality", null)
-                        .WithMany("DoctorProfiles")
-                        .HasForeignKey("SpecialityId1");
 
                     b.HasOne("LeoClinic.Domain.Entities.User", "User")
                         .WithOne("DoctorProfile")
@@ -675,6 +740,17 @@ namespace LeoClinic.Infrastructure.Migrations
                     b.Navigation("PatientProfile");
                 });
 
+            modelBuilder.Entity("LeoClinic.Domain.Entities.RefreshToken", b =>
+                {
+                    b.HasOne("LeoClinic.Domain.Entities.User", "User")
+                        .WithMany("RefreshTokens")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("LeoClinic.Domain.Entities.VerificationCode", b =>
                 {
                     b.HasOne("LeoClinic.Domain.Entities.User", "User")
@@ -737,6 +813,8 @@ namespace LeoClinic.Infrastructure.Migrations
                     b.Navigation("Notifications");
 
                     b.Navigation("PatientProfile");
+
+                    b.Navigation("RefreshTokens");
 
                     b.Navigation("VerificationCodes");
                 });

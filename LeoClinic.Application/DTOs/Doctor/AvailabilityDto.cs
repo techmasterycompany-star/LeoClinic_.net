@@ -7,6 +7,6 @@
         public TimeSpan StartTime { get; set; }
         public TimeSpan EndTime { get; set; }
         public bool IsBooked { get; set; }
-        public string LocationName { get; set; } = string.Empty;
+        public LocationDto Location { get; set; } = new();
     }
 }

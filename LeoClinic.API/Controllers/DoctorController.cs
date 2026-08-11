@@ -5,6 +5,7 @@ using LeoClinic.Application.Services;
 using LeoClinic.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace LeoClinic.API.Controllers
 {
@@ -26,9 +27,9 @@ namespace LeoClinic.API.Controllers
         }
 
         [HttpGet("search")]
-        public async Task<IActionResult> SearchDoctor(string? specialty, int? locationId, string? name, bool? isApproved)
+        public async Task<IActionResult> SearchDoctor(string? specialty, int? locationId, string? name)
         {
-            var doctors = await service.SearchDoctorAsync(specialty, locationId, name, isApproved);
+            var doctors = await service.SearchDoctorAsync(specialty, locationId, name);
             return Ok(doctors);
         }
 
@@ -48,13 +49,13 @@ namespace LeoClinic.API.Controllers
             return Ok(doctors);
         }
 
-        [HttpPost]
-        [Authorize(Roles = "Admin,Doctor")]
-        public async Task<IActionResult> CreateDoctor([FromBody] CreateDoctorDto dto)
-        {
-            var doctor = await service.CreateProfileAsync(dto);
-            return CreatedAtAction(nameof(GetDoctorProfile), new { id = doctor.Id }, doctor);
-        }
+        //[HttpPost]
+        //[Authorize(Roles = "Admin,Doctor")]
+        //public async Task<IActionResult> CreateDoctor([FromBody] CreateDoctorDto dto)
+        //{
+        //    var doctor = await service.CreateProfileAsync(dto);
+        //    return CreatedAtAction(nameof(GetDoctorProfile), new { id = doctor.Id }, doctor);
+        //}
 
         [HttpPut("{id}")]
         [Authorize(Roles = "Admin,Doctor")]
@@ -78,35 +79,21 @@ namespace LeoClinic.API.Controllers
             return NoContent();
         }
 
-        [HttpPut("{id}/approve")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> ApproveDoctor(int id)
-        {
-            var result = await service.ApproveDoctorAsync(id);
-            if (!result)
-                return NotFound();
-
-            return Ok(new { message = "Doctor approved successfully" });
-        }
-
-        [HttpPut("{id}/reject")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> RejectDoctor(int id)
-        {
-            var result = await service.RejectDoctorAsync(id);
-            if (!result)
-                return NotFound();
-
-            return Ok(new { message = "Doctor rejected successfully" });
-        }
-
         [HttpPost("{id}/slots")]
         [Authorize(Roles = "Admin,Doctor")]
         public async Task<IActionResult> AddSlot(int id, [FromBody] CreateAvailabilityDto dto)
         {
+            if (User.IsInRole("Doctor"))
+            {
+                var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+                var doctor = await service.GetDoctorByUserIdAsync(userId);
+                if (doctor is null || doctor.Id != id)
+                    return Forbid();
+            }
+
             dto.DoctorId = id;
-            var slot = await service.CreateSlotAsync(dto);
-            return CreatedAtAction(nameof(GetSlots), new { id = id }, slot);
+            var slots = await service.CreateSlotAsync(dto);
+            return Ok(slots);
         }
 
         [HttpGet("{id}/slots")]
@@ -123,24 +110,33 @@ namespace LeoClinic.API.Controllers
             return Ok(appointments);
         }
 
-        [HttpGet("appointments/{appointmentId}")]
-        public async Task<IActionResult> GetAppointmentById(int appointmentId)
+        [HttpGet("{id}/appointments/{appointmentId}")]
+        public async Task<IActionResult> GetAppointmentById(int id, int appointmentId)
         {
             var appointment = await service.GetAppointmentByIdAsync(appointmentId);
             if (appointment is null)
                 return NotFound();
 
+            if (appointment.DoctorId != id)
+                return Forbid();
+
             return Ok(appointment);
         }
 
-        [HttpPut("appointments/{appointmentId}/status")]
-        public async Task<IActionResult> UpdateAppointment(int appointmentId, [FromQuery] AppointmentStatus status)
+        [HttpPut("{id}/appointments/{appointmentId}/status")]
+        [Authorize(Roles = "Doctor")]
+        public async Task<IActionResult> UpdateAppointment(int id, int appointmentId, [FromQuery] AppointmentStatus status)
         {
-            var appointment = await service.UpdateAppointmentAsync(appointmentId, status);
-            if (appointment is null)
+            var appointment = await service.GetAppointmentByIdAsync(appointmentId);
+            if (appointment is null) return NotFound();
+
+            if (appointment.DoctorId != id) return Forbid();
+
+            var result = await service.UpdateAppointmentAsync(appointmentId, status);
+            if (result is null)
                 return NotFound();
 
-            return Ok(appointment);
+            return Ok(result);
         }
 
         [HttpGet("{id}/reviews")]
