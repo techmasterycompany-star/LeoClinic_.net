@@ -79,5 +79,10 @@ namespace LeoClinic.Infrastructure.Repositories
         {
             return await _context.PatientProfiles.Include(p => p.User).FirstOrDefaultAsync(p => p.UserId == userId);
         }
+
+        public Task<int> GetPatientIdByUserIdAsync(int userId)
+        {
+            return _context.PatientProfiles.Where(p => p.UserId == userId).Select(p => p.Id).FirstOrDefaultAsync();
+        }
     }
 }

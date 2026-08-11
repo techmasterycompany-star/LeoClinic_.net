@@ -12,6 +12,7 @@ namespace LeoClinic.Application.Interfaces
         Task<List<PatientProfile>> GetAllPatientsAsync();
         Task<List<PatientProfile>> GetApprovedPatientsAsync();
         Task<PatientProfile?> GetPatientByIdAsync(int id);
+        Task<int> GetPatientIdByUserIdAsync(int userId);
         Task<PatientProfile> CreatePatientAsync(PatientProfile patientProfile);
         Task<PatientProfile?> GetPatientByUserIdAsync(int userId);
         Task UpdatePatientProfileAsync(PatientProfile patientProfile);

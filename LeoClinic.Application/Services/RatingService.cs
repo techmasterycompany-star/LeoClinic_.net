@@ -40,24 +40,17 @@ namespace LeoClinic.Application.Services
 
         public async Task<bool> DeleteRating(int id, int patientId)
         {
-            try
-            {
-                var ratingToDelete = await _ratingRepository.GetRatingByIdAsync(id);
-                if (ratingToDelete == null)
-                {
-                    return false;
-                }
-                if (ratingToDelete.PatientId != patientId)
-                {
-                    throw new UnauthorizedAccessException("You are not authorized to update this rating.");
-                }
-                await _ratingRepository.DeleteRating(ratingToDelete);
-                return true;
-            }
-            catch
+            var ratingToDelete = await _ratingRepository.GetRatingByIdAsync(id);
+            if (ratingToDelete == null)
             {
                 return false;
             }
+            if (ratingToDelete.PatientId != patientId)
+            {
+                throw new UnauthorizedAccessException("You are not authorized to update this rating.");
+            }
+            await _ratingRepository.DeleteRating(ratingToDelete);
+            return true;
         }
 
         public async Task<RatingDto?> GetRatingByIdAsync(int id)

@@ -12,10 +12,11 @@ namespace LeoClinic.Application.Interfaces
     {
         Task<List<PatientProfileDTO>> GetAllPatientsAsync();
         Task<List<PatientProfileDTO>> GetApprovedPatientsAsync();
-        Task<PatientProfileDTO?> GetPatientByIdAsync(int id);
         Task<PatientProfileDTO> CreatePatientProfileAsync(CreatePatientDTO createPatientDTO);
+        Task<PatientProfileDTO?> GetPatientByIdAsync(int id);
         Task<bool> UpdatePatientProfileAsync(int id, UpdatePatientProfileDTO patientProfile);
         Task<bool> DeletePatientAsync(int id);
         Task<bool> ApprovePatientAsync(int id);
+        Task<int> GetPatientIdByUserIdAsync(int id);
     }
 }
