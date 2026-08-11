@@ -18,6 +18,7 @@ namespace LeoClinic.Infrastructure.Repositories
                 .Include(d => d.User)
                 .Include(d => d.Speciality)
                 .Include(d => d.DoctorLocations).ThenInclude(dl => dl.Location)
+                .Include(d => d.Ratings)
                 .AsQueryable();
 
             if (!string.IsNullOrEmpty(specialty))
