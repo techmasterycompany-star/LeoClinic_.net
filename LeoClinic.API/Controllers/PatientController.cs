@@ -24,6 +24,7 @@ namespace LeoClinic.API.Controllers
 
 
         [HttpGet("")]
+        [Authorize(Roles = "Patient")]
         public async Task<IActionResult> GetPatientProfile()
         {
             var patientId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
@@ -35,9 +36,9 @@ namespace LeoClinic.API.Controllers
         }
 
 
-        [HttpPut("{id}")]
-        [Authorize(Roles = "Admin,Patient")]
-        public async Task<IActionResult> UpdatePatient(int id, [FromBody] UpdatePatientProfileDTO dto)
+        [HttpPut()]
+        [Authorize(Roles = "Patient")]
+        public async Task<IActionResult> UpdatePatient([FromBody] UpdatePatientProfileDTO dto)
         {
             if (dto is null)
                 return BadRequest(new { error = "Request body is required." });
@@ -45,9 +46,11 @@ namespace LeoClinic.API.Controllers
             if (!ModelState.IsValid)
                 return ValidationProblem(ModelState);
 
+            var patientId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
             try
             {
-                var result = await _patientService.UpdatePatientProfileAsync(id, dto);
+                var result = await _patientService.UpdatePatientProfileAsync(patientId, dto);
                 if (!result)
                     return NotFound();
 
