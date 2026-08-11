@@ -101,7 +101,7 @@ namespace LeoClinic.Application.Services
 
         public async Task<PatientProfileDTO?> GetPatientByIdAsync(int id)
         {
-            var patient = await _patientRepository.GetPatientByUserIdAsync(id);
+            var patient = await _patientRepository.GetPatientByIdAsync(id);
             var result = (patient is null)? null : new PatientProfileDTO{
                 Id = patient.Id,
                 Address = patient.Address,
@@ -113,13 +113,14 @@ namespace LeoClinic.Application.Services
                 LastName = patient.User.LastName,
                 Email = patient.User.Email,
                 IsBlocked = patient.User.IsBlocked,
+                DateJoined = patient.CreatedAt
             };
             return result;
         }
 
         public async Task<bool> UpdatePatientProfileAsync(int id, UpdatePatientProfileDTO patientProfile)
         {
-            var patient = await _patientRepository.GetPatientByUserIdAsync(id);
+            var patient = await _patientRepository.GetPatientByIdAsync(id);
             if (patient != null)
             {
                 patient.Address = patientProfile.Address;
@@ -153,6 +154,11 @@ namespace LeoClinic.Application.Services
                 return true;
             }
             else {  return false; }
+        }
+
+        public async Task<int> GetPatientIdByUserIdAsync(int id)
+        {
+            return await _patientRepository.GetPatientIdByUserIdAsync(id);
         }
     }
 }

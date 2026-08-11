@@ -20,6 +20,6 @@ namespace LeoClinic.Application.DTOs.Patient
         public string Address { get; set; } = string.Empty;
         public bool IsApproved { get; set; }
         public DateTime DateOfBirth { get; set; }
-        public DateTime DateJoined { get; set; } = DateTime.UtcNow;
+        public DateTime DateJoined { get; set; }
     }
 }

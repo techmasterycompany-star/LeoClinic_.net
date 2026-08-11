@@ -151,7 +151,7 @@ namespace LeoClinic.Application.Services
             }
 
             if(patientId != null) { 
-                if (appointment.PatientProfile.UserId != patientId)
+                if (appointment.PatientId != patientId)
                 {
                     throw new UnauthorizedAccessException("You are not authorized to update this appointment.");
                 }
