@@ -33,6 +33,7 @@ namespace LeoClinic.Application.Services
             message.Body = new TextPart(TextFormat.Html) { Text = bodyHtml };
 
             using var smtp = new SmtpClient();
+            smtp.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true;
             var socketOptions = _emailSettings.EnableSsl ? SecureSocketOptions.StartTls : SecureSocketOptions.Auto;
             await smtp.ConnectAsync(_emailSettings.SmtpServer, _emailSettings.SmtpPort, socketOptions);
 

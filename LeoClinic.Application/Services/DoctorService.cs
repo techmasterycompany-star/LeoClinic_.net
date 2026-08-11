@@ -26,77 +26,113 @@ namespace LeoClinic.Application.Services
             return true;
         }
 
-        public async Task<DoctorProfileDto> CreateProfileAsync(CreateDoctorDto dto)
-        {
-            var doctor = new DoctorProfile
-            {
-                Price = dto.Price,
-                Bio = dto.Bio,
-                ContactNumber = dto.ContactNumber,
-                SpecialityId = dto.SpecialityId,
-                UserId = dto.UserId,
-                IsApproved = false,
-                CreatedAt = DateTime.UtcNow
-            };
-            await repo.CreateAsync(doctor);
+        //public async Task<DoctorProfileDto> CreateProfileAsync(CreateDoctorDto dto)
+        //{
+        //    var doctor = new DoctorProfile
+        //    {
+        //        Price = dto.Price,
+        //        Bio = dto.Bio,
+        //        ContactNumber = dto.ContactNumber,
+        //        SpecialityId = dto.SpecialityId,
+        //        UserId = dto.UserId,
+        //        IsApproved = false,
+        //        CreatedAt = DateTime.UtcNow
+        //    };
+        //    await repo.CreateAsync(doctor);
 
-            if (dto.LocationIds != null && dto.LocationIds.Any())
+        //    if (dto.LocationIds != null && dto.LocationIds.Any())
+        //    {
+        //        foreach (var locationId in dto.LocationIds)
+        //        {
+        //            doctor.DoctorLocations.Add(new DoctorLocation
+        //            {
+        //                DoctorId = doctor.Id,
+        //                LocationId = locationId,
+        //                CreatedAt = DateTime.UtcNow
+        //            });
+        //        }
+        //    }
+
+        //    var profile = new DoctorProfileDto
+        //    {
+        //        Id = doctor.Id,
+        //        Price = doctor.Price,
+        //        Bio = doctor.Bio,
+        //        ContactNumber = doctor.ContactNumber,
+        //        IsApproved = doctor.IsApproved,
+        //        SpecialityId = doctor.SpecialityId
+        //    };
+        //    await repo.SaveChangesAsync();
+        //    return profile;
+        //}
+
+        public async Task<IEnumerable<AvailabilityDto>> CreateSlotAsync(CreateAvailabilityDto dto)
+        {
+            if (dto.SlotDurationMinutes <= 0)
+                throw new ArgumentException("Slot duration must be greater than 0.");
+
+            if (dto.DayStartTime >= dto.DayEndTime)
+                throw new ArgumentException("Start time must be before end time.");
+
+            var slots = new List<Availability>();
+            var currentStart = dto.DayStartTime;
+            var duration = TimeSpan.FromMinutes(dto.SlotDurationMinutes);
+
+            while (currentStart + duration <= dto.DayEndTime)
             {
-                foreach (var locationId in dto.LocationIds)
+                var slot = new Availability
                 {
-                    doctor.DoctorLocations.Add(new DoctorLocation
-                    {
-                        DoctorId = doctor.Id,
-                        LocationId = locationId,
-                        CreatedAt = DateTime.UtcNow
-                    });
-                }
+                    DoctorId = dto.DoctorId,
+                    LocationId = dto.LocationId,
+                    Date = dto.Date,
+                    StartTime = currentStart,
+                    EndTime = currentStart + duration,
+                    IsBooked = false,
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                slots.Add(slot);
+                await repo.AddSlotAsync(slot);
+                currentStart += duration;
             }
 
-            var profile = new DoctorProfileDto
-            {
-                Id = doctor.Id,
-                Price = doctor.Price,
-                Bio = doctor.Bio,
-                ContactNumber = doctor.ContactNumber,
-                IsApproved = doctor.IsApproved,
-                SpecialityId = doctor.SpecialityId
-            };
-            await repo.SaveChangesAsync();
-            return profile;
-        }
-
-        public async Task<AvailabilityDto> CreateSlotAsync(CreateAvailabilityDto dto)
-        {
-            var slot = new Availability
-            {
-                DoctorId = dto.DoctorId,
-                LocationId = dto.LocationId,
-                Date = dto.Date,
-                StartTime = dto.StartTime,
-                EndTime = dto.EndTime,
-                IsBooked = false,
-                CreatedAt = DateTime.UtcNow
-            };
-
-            await repo.AddSlotAsync(slot);
             await repo.SaveChangesAsync();
 
-            return new AvailabilityDto
+            var location = await repo.GetLocationByIdAsync(dto.LocationId);
+
+            return slots.Select(s => new AvailabilityDto
             {
-                Id = slot.Id,
-                Date = slot.Date,
-                StartTime = slot.StartTime,
-                EndTime = slot.EndTime,
-                IsBooked = slot.IsBooked,
-                LocationName = string.Empty
-            };
+                Id = s.Id,
+                Date = s.Date,
+                StartTime = s.StartTime,
+                EndTime = s.EndTime,
+                IsBooked = s.IsBooked,
+                Location = location != null
+                    ? new LocationDto
+                    {
+                        Id = location.Id,
+                        Name = location.Name,
+                        Address = location.Address,
+                        City = location.City
+                    }
+                    : new LocationDto { Id = dto.LocationId }
+            }).ToList();
         }
 
         public async Task<bool> DeleteProfileAsync(int id)
         {
             var doctor = await repo.GetByIdAsync(id);
             if (doctor is null) return false;
+
+            if (doctor.Ratings.Any())
+                repo.RemoveRatings(doctor.Ratings);
+
+            if (doctor.Appointments.Any())
+                repo.RemoveAppointments(doctor.Appointments);
+
+            if (doctor.Availabilities.Any())
+                repo.RemoveAvailabilities(doctor.Availabilities);
+
             repo.Delete(doctor);
             await repo.SaveChangesAsync();
             return true;
@@ -129,9 +165,9 @@ namespace LeoClinic.Application.Services
             }).ToList();
         }
 
-        public async Task<IEnumerable<DoctorProfileDto?>> SearchDoctorAsync(string? specialty, int? locationId, string? name, bool? isApproved)
+        public async Task<IEnumerable<DoctorProfileDto?>> SearchDoctorAsync(string? specialty, int? locationId, string? name)
         {
-            var doctors = await repo.SearchAsync(specialty, locationId, name, isApproved);    
+            var doctors = await repo.SearchAsync(specialty, locationId, name);    
 
             return doctors.Select(d => new DoctorProfileDto
             {
@@ -174,6 +210,7 @@ namespace LeoClinic.Application.Services
                 DoctorName = appointment.DoctorProfile?.User != null
                     ? $"{appointment.DoctorProfile.User.FirstName} {appointment.DoctorProfile.User.LastName}"
                     : string.Empty,
+                DoctorId = appointment.DoctorId,
                 Date = appointment.Availability?.Date ?? DateTime.MinValue,
                 StartTime = appointment.Availability?.StartTime ?? TimeSpan.Zero,
                 EndTime = appointment.Availability?.EndTime ?? TimeSpan.Zero,
@@ -197,12 +234,18 @@ namespace LeoClinic.Application.Services
                 DoctorName = a.DoctorProfile?.User != null
                     ? $"{a.DoctorProfile.User.FirstName} {a.DoctorProfile.User.LastName}"
                     : string.Empty,
+                DoctorId = a.DoctorId,
                 Date = a.Availability?.Date ?? DateTime.MinValue,
                 StartTime = a.Availability?.StartTime ?? TimeSpan.Zero,
                 EndTime = a.Availability?.EndTime ?? TimeSpan.Zero,
                 LocationName = a.Availability?.Location?.Name ?? string.Empty,
                 PaymentAmount = a.Payment?.Amount
             }).ToList();
+        }
+
+        public async Task<DoctorProfile?> GetDoctorByUserIdAsync(int userId)
+        {
+            return await repo.GetByUserIdAsync(userId);
         }
 
         public async Task<IEnumerable<DoctorProfileDto>> GetApprovedDoctorsAsync()
@@ -287,7 +330,15 @@ namespace LeoClinic.Application.Services
                 StartTime = s.StartTime,
                 EndTime = s.EndTime,
                 IsBooked = s.IsBooked,
-                LocationName = s.Location?.Name ?? string.Empty
+                Location = s.Location != null
+                    ? new LocationDto
+                    {
+                        Id = s.Location.Id,
+                        Name = s.Location.Name,
+                        Address = s.Location.Address,
+                        City = s.Location.City
+                    }
+                    : new LocationDto()
             }).ToList();
         }
 
@@ -313,6 +364,7 @@ namespace LeoClinic.Application.Services
             appointment.UpdatedAt = DateTime.UtcNow;
 
             await repo.UpdateAppointmentAsync(appointment);
+            await repo.SaveChangesAsync();
 
             return new AppointmentDto
             {
@@ -325,6 +377,7 @@ namespace LeoClinic.Application.Services
                 DoctorName = appointment.DoctorProfile?.User != null
                     ? $"{appointment.DoctorProfile.User.FirstName} {appointment.DoctorProfile.User.LastName}"
                     : string.Empty,
+                DoctorId = appointment.DoctorId,
                 Date = appointment.Availability?.Date ?? DateTime.MinValue,
                 StartTime = appointment.Availability?.StartTime ?? TimeSpan.Zero,
                 EndTime = appointment.Availability?.EndTime ?? TimeSpan.Zero,
@@ -366,26 +419,29 @@ namespace LeoClinic.Application.Services
             repo.Update(doctor);
             await repo.SaveChangesAsync();
 
+            var updatedDoctor = await repo.GetByIdAsync(id);
+            if (updatedDoctor is null) return null;
+
             return new DoctorProfileDto
             {
-                Id = doctor.Id,
-                Price = doctor.Price,
-                Bio = doctor.Bio,
-                ContactNumber = doctor.ContactNumber,
-                IsApproved = doctor.IsApproved,
-                UserId = doctor.UserId,
-                UserName = doctor.User != null ? $"{doctor.User.FirstName} {doctor.User.LastName}" : string.Empty,
-                UserEmail = doctor.User?.Email ?? string.Empty,
-                SpecialityId = doctor.SpecialityId,
-                SpecialityName = doctor.Speciality?.Name ?? string.Empty,
-                Locations = doctor.DoctorLocations?.Select(dl => new LocationDto
+                Id = updatedDoctor.Id,
+                Price = updatedDoctor.Price,
+                Bio = updatedDoctor.Bio,
+                ContactNumber = updatedDoctor.ContactNumber,
+                IsApproved = updatedDoctor.IsApproved,
+                UserId = updatedDoctor.UserId,
+                UserName = updatedDoctor.User != null ? $"{updatedDoctor.User.FirstName} {updatedDoctor.User.LastName}" : string.Empty,
+                UserEmail = updatedDoctor.User?.Email ?? string.Empty,
+                SpecialityId = updatedDoctor.SpecialityId,
+                SpecialityName = updatedDoctor.Speciality?.Name ?? string.Empty,
+                Locations = updatedDoctor.DoctorLocations?.Select(dl => new LocationDto
                 {
                     Id = dl.Location.Id,
                     Name = dl.Location.Name,
                     Address = dl.Location.Address,
                     City = dl.Location.City
                 }).ToList() ?? new List<LocationDto>(),
-                AverageRating = doctor.Ratings?.Any() == true ? doctor.Ratings.Average(r => r.Rate) : 0
+                AverageRating = updatedDoctor.Ratings?.Any() == true ? updatedDoctor.Ratings.Average(r => r.Rate) : 0
             };
         }
     }

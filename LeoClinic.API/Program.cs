@@ -3,9 +3,11 @@ using LeoClinic.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Net.Security;
 using System.Text;
 using System.Text.Json.Serialization;
 
+AppContext.SetSwitch("System.Net.Security.SslStream.CertificateRevocationCheckMode", false);
 DotNetEnv.Env.TraversePath().Load();
 
 var builder = WebApplication.CreateBuilder(args);

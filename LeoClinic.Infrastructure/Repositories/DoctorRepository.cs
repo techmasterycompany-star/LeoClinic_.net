@@ -12,7 +12,7 @@ namespace LeoClinic.Infrastructure.Repositories
         {
             this.context = context;
         }
-        public async Task<IEnumerable<DoctorProfile>> SearchAsync(string? specialty, int? locationId, string? name, bool? isApproved)
+        public async Task<IEnumerable<DoctorProfile>> SearchAsync(string? specialty, int? locationId, string? name)
         {
             var query = context.DoctorProfiles
                 .Include(d => d.User)
@@ -35,10 +35,10 @@ namespace LeoClinic.Infrastructure.Repositories
                 query = query.Where(d => d.User.FirstName.ToLower().Contains(name.ToLower()) || d.User.LastName.ToLower().Contains(name.ToLower()));
             }
 
-            if (isApproved.HasValue)
-            {
-                query = query.Where(d => d.IsApproved == isApproved.Value);
-            }
+            //if (isApproved.HasValue)
+            //{
+            //    query = query.Where(d => d.IsApproved == isApproved.Value);
+            //}
 
             return await query.ToListAsync();
         }
@@ -48,15 +48,30 @@ namespace LeoClinic.Infrastructure.Repositories
             return slot;
         }
 
-        public async Task<DoctorProfile> CreateAsync(DoctorProfile doctorProfile)
-        {
-            await context.DoctorProfiles.AddAsync(doctorProfile);
-            return doctorProfile;
-        }
+        //public async Task<DoctorProfile> CreateAsync(DoctorProfile doctorProfile)
+        //{
+        //    await context.DoctorProfiles.AddAsync(doctorProfile);
+        //    return doctorProfile;
+        //}
 
         public void Delete(DoctorProfile doctorProfile)
         {
             context.DoctorProfiles.Remove(doctorProfile);
+        }
+
+        public void RemoveRatings(ICollection<Rating> ratings)
+        {
+            context.Ratings.RemoveRange(ratings);
+        }
+
+        public void RemoveAppointments(ICollection<Appointment> appointments)
+        {
+            context.Appointments.RemoveRange(appointments);
+        }
+
+        public void RemoveAvailabilities(ICollection<Availability> availabilities)
+        {
+            context.Availabilities.RemoveRange(availabilities);
         }
 
         public async Task<IEnumerable<DoctorProfile>> GetAllAsync()
@@ -88,6 +103,7 @@ namespace LeoClinic.Infrastructure.Repositories
         {
             var appointments = await context.Appointments
                 .Include(a => a.Availability).ThenInclude(av => av.Location)
+                .Include(a => a.DoctorProfile).ThenInclude(d => d.User)
                 .Include(a => a.PatientProfile).ThenInclude(p => p.User)
                 .Where(a => a.DoctorId == doctorId)
                 .ToListAsync();
@@ -102,10 +118,18 @@ namespace LeoClinic.Infrastructure.Repositories
                 .Include(d => d.Speciality)
                 .Include(d => d.DoctorLocations).ThenInclude(dl => dl.Location)
                 .Include(d => d.Ratings)
+                .Include(d => d.Appointments)
+                .Include(d => d.Availabilities)
                 .FirstOrDefaultAsync(d => d.Id == id);
             if (doctor is null) return null;
 
             return doctor;
+        }
+
+        public async Task<DoctorProfile?> GetByUserIdAsync(int userId)
+        {
+            return await context.DoctorProfiles
+                .FirstOrDefaultAsync(d => d.UserId == userId);
         }
 
         public async Task<IEnumerable<Rating>> GetReviewsByDoctorIdAsync(int doctorId)
@@ -125,6 +149,11 @@ namespace LeoClinic.Infrastructure.Repositories
                 .ToListAsync();
 
             return slots;
+        }
+
+        public async Task<Location?> GetLocationByIdAsync(int locationId)
+        {
+            return await context.Locations.FindAsync(locationId);
         }
 
         public  void Update(DoctorProfile doctorProfile)

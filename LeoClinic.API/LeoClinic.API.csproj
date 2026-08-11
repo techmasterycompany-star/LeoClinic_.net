@@ -32,4 +32,8 @@
     <ProjectReference Include="..\LeoClinic.Shared\LeoClinic.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update=".env" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>
