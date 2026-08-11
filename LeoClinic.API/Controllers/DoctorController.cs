@@ -29,7 +29,7 @@ namespace LeoClinic.API.Controllers
         [HttpGet("search")]
         public async Task<IActionResult> SearchDoctor(string? specialty, int? locationId, string? name)
         {
-            var doctors = await service.SearchDoctorAsync(specialty, locationId, name, true);
+            var doctors = await service.SearchDoctorAsync(specialty, locationId, name);
             return Ok(doctors);
         }
 
