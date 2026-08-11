@@ -1,6 +1,8 @@
 using LeoClinic.Application;
 using LeoClinic.Infrastructure;
+using LeoClinic.Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Net.Security;
@@ -81,6 +83,17 @@ builder.Services.AddAuthentication(options =>
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
+
+// Seed database
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider
+        .GetRequiredService<AppDbContext>();
+
+    await context.Database.MigrateAsync();
+
+    await DbSeeder.SeedAsync(context);
+}
 
 if (app.Environment.IsDevelopment())
 {
