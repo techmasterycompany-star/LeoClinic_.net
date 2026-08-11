@@ -63,58 +63,6 @@ namespace LeoClinic.Infrastructure.Migrations
                     b.HasIndex("PatientId");
 
                     b.ToTable("Appointments");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AvailabilityId = 1,
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DoctorId = 8,
-                            Notes = "Annual checkup",
-                            PatientId = 1,
-                            Status = 1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            AvailabilityId = 2,
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DoctorId = 9,
-                            Notes = "Chest pain consultation",
-                            PatientId = 2,
-                            Status = 1
-                        },
-                        new
-                        {
-                            Id = 3,
-                            AvailabilityId = 3,
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DoctorId = 10,
-                            Notes = "Skin rash examination",
-                            PatientId = 3,
-                            Status = 1
-                        },
-                        new
-                        {
-                            Id = 4,
-                            AvailabilityId = 4,
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DoctorId = 11,
-                            Notes = "Child vaccination",
-                            PatientId = 4,
-                            Status = 1
-                        },
-                        new
-                        {
-                            Id = 5,
-                            AvailabilityId = 5,
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DoctorId = 12,
-                            Notes = "Knee pain assessment",
-                            PatientId = 5,
-                            Status = 1
-                        });
                 });
 
             modelBuilder.Entity("LeoClinic.Domain.Entities.Availability", b =>
@@ -156,63 +104,6 @@ namespace LeoClinic.Infrastructure.Migrations
                     b.HasIndex("LocationId");
 
                     b.ToTable("Availabilities");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Date = new DateTime(2026, 8, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DoctorId = 8,
-                            EndTime = new TimeSpan(0, 10, 0, 0, 0),
-                            IsBooked = true,
-                            LocationId = 1,
-                            StartTime = new TimeSpan(0, 9, 0, 0, 0)
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Date = new DateTime(2026, 8, 16, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DoctorId = 9,
-                            EndTime = new TimeSpan(0, 11, 0, 0, 0),
-                            IsBooked = true,
-                            LocationId = 2,
-                            StartTime = new TimeSpan(0, 10, 0, 0, 0)
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Date = new DateTime(2026, 8, 17, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DoctorId = 10,
-                            EndTime = new TimeSpan(0, 12, 0, 0, 0),
-                            IsBooked = true,
-                            LocationId = 3,
-                            StartTime = new TimeSpan(0, 11, 0, 0, 0)
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Date = new DateTime(2026, 8, 18, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DoctorId = 11,
-                            EndTime = new TimeSpan(0, 14, 0, 0, 0),
-                            IsBooked = true,
-                            LocationId = 4,
-                            StartTime = new TimeSpan(0, 13, 0, 0, 0)
-                        },
-                        new
-                        {
-                            Id = 5,
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Date = new DateTime(2026, 8, 19, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            DoctorId = 12,
-                            EndTime = new TimeSpan(0, 15, 0, 0, 0),
-                            IsBooked = true,
-                            LocationId = 5,
-                            StartTime = new TimeSpan(0, 14, 0, 0, 0)
-                        });
                 });
 
             modelBuilder.Entity("LeoClinic.Domain.Entities.DoctorLocation", b =>
@@ -242,43 +133,6 @@ namespace LeoClinic.Infrastructure.Migrations
                     b.HasIndex("LocationId");
 
                     b.ToTable("DoctorLocations");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DoctorId = 8,
-                            LocationId = 1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DoctorId = 9,
-                            LocationId = 2
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DoctorId = 10,
-                            LocationId = 3
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DoctorId = 11,
-                            LocationId = 4
-                        },
-                        new
-                        {
-                            Id = 5,
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DoctorId = 12,
-                            LocationId = 5
-                        });
                 });
 
             modelBuilder.Entity("LeoClinic.Domain.Entities.DoctorProfile", b =>
@@ -324,63 +178,6 @@ namespace LeoClinic.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("DoctorProfiles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 8,
-                            Bio = "Experienced general practitioner with 10 years of practice",
-                            ContactNumber = "01012345678",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IsApproved = true,
-                            Price = 200m,
-                            SpecialityId = 1,
-                            UserId = 9
-                        },
-                        new
-                        {
-                            Id = 9,
-                            Bio = "Cardiologist specialized in interventional cardiology",
-                            ContactNumber = "01123456789",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IsApproved = true,
-                            Price = 500m,
-                            SpecialityId = 2,
-                            UserId = 10
-                        },
-                        new
-                        {
-                            Id = 10,
-                            Bio = "Dermatologist with expertise in cosmetic dermatology",
-                            ContactNumber = "01234567890",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IsApproved = true,
-                            Price = 350m,
-                            SpecialityId = 3,
-                            UserId = 11
-                        },
-                        new
-                        {
-                            Id = 11,
-                            Bio = "Pediatrician caring for children from birth to adolescence",
-                            ContactNumber = "01098765432",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IsApproved = true,
-                            Price = 250m,
-                            SpecialityId = 4,
-                            UserId = 12
-                        },
-                        new
-                        {
-                            Id = 12,
-                            Bio = "Orthopedic surgeon specializing in sports injuries",
-                            ContactNumber = "01187654321",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IsApproved = true,
-                            Price = 400m,
-                            SpecialityId = 5,
-                            UserId = 13
-                        });
                 });
 
             modelBuilder.Entity("LeoClinic.Domain.Entities.Location", b =>
@@ -420,53 +217,6 @@ namespace LeoClinic.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Locations");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Address = "15 Tahrir Street",
-                            City = "Cairo",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Name = "Main Clinic",
-                            Phone = "02-27951234"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Address = "22 El Corniche Road",
-                            City = "Alexandria",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Name = "Branch Clinic",
-                            Phone = "03-34856789"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Address = "8 Pyramids Street",
-                            City = "Giza",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Name = "Hospital Center",
-                            Phone = "02-37891234"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Address = "10 El Gomhouria Street",
-                            City = "Mansoura",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Name = "Medical Center",
-                            Phone = "050-2345678"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Address = "5 El Saada Street",
-                            City = "Tanta",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Name = "Health Center",
-                            Phone = "040-3456789"
-                        });
                 });
 
             modelBuilder.Entity("LeoClinic.Domain.Entities.Notification", b =>
@@ -518,73 +268,6 @@ namespace LeoClinic.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Notifications");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AppointmentId = 1,
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IsRead = false,
-                            Message = "Your appointment has been confirmed",
-                            RetryCount = 0,
-                            SentAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Status = 1,
-                            Type = 0,
-                            UserId = 14
-                        },
-                        new
-                        {
-                            Id = 2,
-                            AppointmentId = 2,
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IsRead = false,
-                            Message = "Your appointment has been confirmed",
-                            RetryCount = 0,
-                            SentAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Status = 1,
-                            Type = 0,
-                            UserId = 15
-                        },
-                        new
-                        {
-                            Id = 3,
-                            AppointmentId = 3,
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IsRead = false,
-                            Message = "Your appointment has been confirmed",
-                            RetryCount = 0,
-                            SentAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Status = 1,
-                            Type = 1,
-                            UserId = 16
-                        },
-                        new
-                        {
-                            Id = 4,
-                            AppointmentId = 4,
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IsRead = false,
-                            Message = "Your appointment has been confirmed",
-                            RetryCount = 0,
-                            SentAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Status = 1,
-                            Type = 2,
-                            UserId = 17
-                        },
-                        new
-                        {
-                            Id = 5,
-                            AppointmentId = 5,
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            IsRead = false,
-                            Message = "Your appointment has been confirmed",
-                            RetryCount = 0,
-                            SentAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Status = 1,
-                            Type = 0,
-                            UserId = 18
-                        });
                 });
 
             modelBuilder.Entity("LeoClinic.Domain.Entities.PatientProfile", b =>
@@ -626,58 +309,6 @@ namespace LeoClinic.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("PatientProfiles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Address = "23 Mohamed Ali Street, Cairo",
-                            ContactNumber = "01011112222",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DateOfBirth = new DateTime(1990, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsApproved = true,
-                            UserId = 14
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Address = "10 Sheraton Street, Cairo",
-                            ContactNumber = "01122223333",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DateOfBirth = new DateTime(1985, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsApproved = true,
-                            UserId = 15
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Address = "5 La Mansión Street, Alexandria",
-                            ContactNumber = "01233334444",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DateOfBirth = new DateTime(1995, 3, 10, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsApproved = true,
-                            UserId = 16
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Address = "18 El-Thawra Street, Giza",
-                            ContactNumber = "01044445555",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DateOfBirth = new DateTime(1992, 11, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsApproved = true,
-                            UserId = 17
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Address = "7 El-Nasr Street, Mansoura",
-                            ContactNumber = "01155556666",
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DateOfBirth = new DateTime(1988, 7, 30, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            IsApproved = true,
-                            UserId = 18
-                        });
                 });
 
             modelBuilder.Entity("LeoClinic.Domain.Entities.Payment", b =>
@@ -727,68 +358,6 @@ namespace LeoClinic.Infrastructure.Migrations
                     b.HasIndex("PatientId");
 
                     b.ToTable("Payments");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Amount = 200m,
-                            AppointmentId = 1,
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            PatientId = 1,
-                            PaymentDate = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            PaymentMethod = "Cash",
-                            Status = 1,
-                            TransactionReference = "TXN-001"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Amount = 500m,
-                            AppointmentId = 2,
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            PatientId = 2,
-                            PaymentDate = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            PaymentMethod = "Credit Card",
-                            Status = 1,
-                            TransactionReference = "TXN-002"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Amount = 350m,
-                            AppointmentId = 3,
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            PatientId = 3,
-                            PaymentDate = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            PaymentMethod = "Vodafone Cash",
-                            Status = 1,
-                            TransactionReference = "TXN-003"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Amount = 250m,
-                            AppointmentId = 4,
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            PatientId = 4,
-                            PaymentDate = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            PaymentMethod = "InstaPay",
-                            Status = 1,
-                            TransactionReference = "TXN-004"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Amount = 400m,
-                            AppointmentId = 5,
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            PatientId = 5,
-                            PaymentDate = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            PaymentMethod = "Cash",
-                            Status = 1,
-                            TransactionReference = "TXN-005"
-                        });
                 });
 
             modelBuilder.Entity("LeoClinic.Domain.Entities.Rating", b =>
@@ -825,53 +394,6 @@ namespace LeoClinic.Infrastructure.Migrations
                     b.HasIndex("PatientId");
 
                     b.ToTable("Ratings");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DoctorId = 1,
-                            PatientId = 1,
-                            Rate = 5,
-                            Review = "Very professional and thorough examination"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DoctorId = 2,
-                            PatientId = 2,
-                            Rate = 4,
-                            Review = "Excellent cardiologist, highly recommended"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DoctorId = 3,
-                            PatientId = 3,
-                            Rate = 5,
-                            Review = "Best dermatologist I have ever visited"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DoctorId = 4,
-                            PatientId = 4,
-                            Rate = 4,
-                            Review = "Very gentle with children, my kid loved her"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            DoctorId = 5,
-                            PatientId = 5,
-                            Rate = 5,
-                            Review = "Solved my knee problem completely"
-                        });
                 });
 
             modelBuilder.Entity("LeoClinic.Domain.Entities.RefreshToken", b =>
@@ -1024,140 +546,6 @@ namespace LeoClinic.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 9,
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Email = "ahmed.ali@clinic.com",
-                            EmailConfirmed = true,
-                            FirstName = "Ahmed",
-                            IsBlocked = false,
-                            LastName = "Ali",
-                            PasswordHash = "$2a$11$wygh8/MdNtSSImU9VL2KsORPOKi9c6Imk4MAG6EzKD9PhZ8QPMMsu",
-                            Role = 1
-                        },
-                        new
-                        {
-                            Id = 10,
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Email = "mohamed.salem@clinic.com",
-                            EmailConfirmed = true,
-                            FirstName = "Mohamed",
-                            IsBlocked = false,
-                            LastName = "Salem",
-                            PasswordHash = "$2a$11$wygh8/MdNtSSImU9VL2KsORPOKi9c6Imk4MAG6EzKD9PhZ8QPMMsu",
-                            Role = 1
-                        },
-                        new
-                        {
-                            Id = 11,
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Email = "sara.khaled@clinic.com",
-                            EmailConfirmed = true,
-                            FirstName = "Sara",
-                            IsBlocked = false,
-                            LastName = "Khaled",
-                            PasswordHash = "$2a$11$wygh8/MdNtSSImU9VL2KsORPOKi9c6Imk4MAG6EzKD9PhZ8QPMMsu",
-                            Role = 1
-                        },
-                        new
-                        {
-                            Id = 12,
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Email = "fatma.hassan@clinic.com",
-                            EmailConfirmed = true,
-                            FirstName = "Fatma",
-                            IsBlocked = false,
-                            LastName = "Hassan",
-                            PasswordHash = "$2a$11$wygh8/MdNtSSImU9VL2KsORPOKi9c6Imk4MAG6EzKD9PhZ8QPMMsu",
-                            Role = 1
-                        },
-                        new
-                        {
-                            Id = 13,
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Email = "omar.youssef@clinic.com",
-                            EmailConfirmed = true,
-                            FirstName = "Omar",
-                            IsBlocked = false,
-                            LastName = "Youssef",
-                            PasswordHash = "$2a$11$wygh8/MdNtSSImU9VL2KsORPOKi9c6Imk4MAG6EzKD9PhZ8QPMMsu",
-                            Role = 1
-                        },
-                        new
-                        {
-                            Id = 14,
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Email = "ali.mahmoud@clinic.com",
-                            EmailConfirmed = true,
-                            FirstName = "Ali",
-                            IsBlocked = false,
-                            LastName = "Mahmoud",
-                            PasswordHash = "$2a$11$wygh8/MdNtSSImU9VL2KsORPOKi9c6Imk4MAG6EzKD9PhZ8QPMMsu",
-                            Role = 2
-                        },
-                        new
-                        {
-                            Id = 15,
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Email = "hassan.ibrahim@clinic.com",
-                            EmailConfirmed = true,
-                            FirstName = "Hassan",
-                            IsBlocked = false,
-                            LastName = "Ibrahim",
-                            PasswordHash = "$2a$11$wygh8/MdNtSSImU9VL2KsORPOKi9c6Imk4MAG6EzKD9PhZ8QPMMsu",
-                            Role = 2
-                        },
-                        new
-                        {
-                            Id = 16,
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Email = "nour.abdelrahman@clinic.com",
-                            EmailConfirmed = true,
-                            FirstName = "Nour",
-                            IsBlocked = false,
-                            LastName = "Abdelrahman",
-                            PasswordHash = "$2a$11$wygh8/MdNtSSImU9VL2KsORPOKi9c6Imk4MAG6EzKD9PhZ8QPMMsu",
-                            Role = 2
-                        },
-                        new
-                        {
-                            Id = 17,
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Email = "layla.mostafa@clinic.com",
-                            EmailConfirmed = true,
-                            FirstName = "Layla",
-                            IsBlocked = false,
-                            LastName = "Mostafa",
-                            PasswordHash = "$2a$11$wygh8/MdNtSSImU9VL2KsORPOKi9c6Imk4MAG6EzKD9PhZ8QPMMsu",
-                            Role = 2
-                        },
-                        new
-                        {
-                            Id = 18,
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Email = "youssef.adel@clinic.com",
-                            EmailConfirmed = true,
-                            FirstName = "Youssef",
-                            IsBlocked = false,
-                            LastName = "Adel",
-                            PasswordHash = "$2a$11$wygh8/MdNtSSImU9VL2KsORPOKi9c6Imk4MAG6EzKD9PhZ8QPMMsu",
-                            Role = 2
-                        },
-                        new
-                        {
-                            Id = 19,
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            Email = "admin.seed@clinic.com",
-                            EmailConfirmed = true,
-                            FirstName = "Admin",
-                            IsBlocked = false,
-                            LastName = "User",
-                            PasswordHash = "$2a$11$wygh8/MdNtSSImU9VL2KsORPOKi9c6Imk4MAG6EzKD9PhZ8QPMMsu",
-                            Role = 0
-                        });
                 });
 
             modelBuilder.Entity("LeoClinic.Domain.Entities.VerificationCode", b =>
