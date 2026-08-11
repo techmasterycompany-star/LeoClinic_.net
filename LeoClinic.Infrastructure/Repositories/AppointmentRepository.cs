@@ -41,6 +41,8 @@ namespace LeoClinic.Infrastructure.Repositories
                     throw new InvalidOperationException("This availability slot is already booked");
                 }
 
+                appointment.DoctorId = availability.DoctorId;
+
                 _dbContext.Appointments.Add(appointment);
 
                 availability.IsBooked = true;
@@ -88,6 +90,11 @@ namespace LeoClinic.Infrastructure.Repositories
 
         public async Task<bool> hasCompletedAppointment(int patientId, int doctorId)
         {
+            var doctorExists = await _dbContext.DoctorProfiles.AnyAsync(d => d.Id == doctorId);
+            if (!doctorExists)
+            {
+                throw new KeyNotFoundException("Doctor not found.");
+            }
             return await _dbContext.Appointments.AnyAsync(a => a.PatientId == patientId && a.DoctorId == doctorId && a.Status == AppointmentStatus.Completed);
         }
 

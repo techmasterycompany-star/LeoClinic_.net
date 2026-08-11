@@ -35,9 +35,11 @@ namespace LeoClinic.API.Controllers
         public async Task<IActionResult> GetPatientProfile()
         {
             var patientId =  await GetCurrentPatientIdAsync();
+            if (patientId is null)
+                return NotFound(new { error = "Patient profile not found." });
 
             var patient = await _patientService.GetPatientByIdAsync(patientId.Value);
-            if (patient is null) return NotFound();
+            if (patient is null) return NotFound(new { error = "Patient profile not found." });
 
             return Ok(patient);
         }
@@ -54,14 +56,16 @@ namespace LeoClinic.API.Controllers
                 return ValidationProblem(ModelState);
 
             var patientId = await GetCurrentPatientIdAsync();
+            if (patientId is null)
+                return NotFound(new { error = "Patient profile not found." });
 
             try
             {
                 var result = await _patientService.UpdatePatientProfileAsync(patientId.Value, dto);
                 if (!result)
-                    return NotFound();
+                    return NotFound(new { error = "Patient Profile Not Found" });
 
-                return NoContent();
+                return Ok(new { message = "Patient profile updated successfully." });
             }
             catch (KeyNotFoundException knf)
             {
@@ -85,7 +89,7 @@ namespace LeoClinic.API.Controllers
             {
                 var patientId = await GetCurrentPatientIdAsync();
                 if (patientId is null)
-                    return NotFound();
+                    return NotFound(new { error = "Patient profile not found." });
 
                 var appointments = await _appointmentService.GetAllByPatientAsync(patientId.Value);
                 return Ok(appointments);
@@ -118,10 +122,10 @@ namespace LeoClinic.API.Controllers
             {
                 var patientId = await GetCurrentPatientIdAsync();
                 if (patientId is null)
-                    return NotFound();
+                    return NotFound(new { error = "Patient profile not found." });
 
                 var app = await _appointmentService.BookAppointmentAsync(patientId.Value, appointment);
-                return Ok(app);
+                return StatusCode(StatusCodes.Status201Created, new { message = "Appointment created successfully.", data = app });
             }
             catch (KeyNotFoundException knf)
             {
@@ -145,11 +149,11 @@ namespace LeoClinic.API.Controllers
             {
                 var patientId = await GetCurrentPatientIdAsync();
                 if (patientId is null)
-                    return NotFound();
+                    return NotFound(new { error = "Patient profile not found." });
 
                 var result = await _appointmentService.RescheduleAppointment(id, availabilityId, patientId.Value);
                 if (!result)
-                    return NotFound();
+                    return NotFound(new { error = "Appointment not found or could not be rescheduled." });
                 return NoContent();
             }
             catch (InvalidOperationException ex)
@@ -182,12 +186,14 @@ namespace LeoClinic.API.Controllers
                 if (User.IsInRole("Patient"))
                 {
                     patientId = await GetCurrentPatientIdAsync();
+                    if (patientId is null)
+                        return NotFound(new { error = "Patient profile not found." });
                 }
 
                 var result = await _appointmentService.UpdateAppointmentStatusAsync(id, Domain.Enums.AppointmentStatus.Cancelled, patientId);
                 if (!result)
-                    return NotFound();
-                return NoContent();
+                    return NotFound(new { error = "Appointment not found." });
+                return Ok(new { message = "Appointment deleted successfully." });
             }
             catch (UnauthorizedAccessException ua)
             {
@@ -216,12 +222,12 @@ namespace LeoClinic.API.Controllers
 
             var patientId = await GetCurrentPatientIdAsync();
             if (patientId is null)
-                return NotFound();
+                return NotFound(new { error = "Patient profile not found." });
 
             try
             {
-                var result = await _ratingService.CreateRating(patientId.Value, dto);
-                return StatusCode(StatusCodes.Status201Created);
+                await _ratingService.CreateRating(patientId.Value, dto);
+                return StatusCode(StatusCodes.Status201Created, new { message = "Review created successfully." });
             }
             catch (KeyNotFoundException knf)
             {
@@ -253,16 +259,16 @@ namespace LeoClinic.API.Controllers
 
             var patientId = await GetCurrentPatientIdAsync();
             if (patientId is null)
-                return NotFound();
+                return NotFound(new { error = "Patient profile not found." });
 
 
             try
             {
                 var result = await _ratingService.UpdateRating(id, patientId.Value, dto);
                 if (!result)
-                    return NotFound();
+                    return NotFound(new { error = "Review not found." });
 
-                return NoContent();
+                return Ok(new { message = "Review updated successfully." });
             }
             catch (KeyNotFoundException knf)
             {
@@ -290,13 +296,13 @@ namespace LeoClinic.API.Controllers
             {
                 var patientId = await GetCurrentPatientIdAsync();
                 if (patientId is null)
-                    return NotFound();
+                    return NotFound(new { error = "Patient profile not found." });
 
                 var result = await _ratingService.DeleteRating(id, patientId.Value);
                 if (!result)
-                    return NotFound();
+                    return NotFound(new { error = "Review not found." });
 
-                return NoContent();
+                return Ok(new { message = "Review deleted successfully." });
             }
             catch (KeyNotFoundException knf)
             {
