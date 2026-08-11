@@ -24,13 +24,8 @@ namespace LeoClinic.Infrastructure.Repositories
             return rating;
         }
 
-        public async Task DeleteRating(int id)
+        public async Task DeleteRating(Rating rating)
         {
-            var rating = await _context.Ratings.FindAsync(id);
-            if (rating == null)
-            {
-                throw new Exception($"Rating with id {id} not found.");
-            }
             _context.Ratings.Remove(rating);
             await _context.SaveChangesAsync();
         }

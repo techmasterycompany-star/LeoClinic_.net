@@ -12,7 +12,7 @@ namespace LeoClinic.Application.Interfaces
         Task<Rating?> GetRatingByIdAsync(int id);
         Task<Rating> CreateRating(Rating rating);
         Task UpdateRating(Rating rating);
-        Task DeleteRating(int id);
+        Task DeleteRating(Rating rating);
 
     }
 }

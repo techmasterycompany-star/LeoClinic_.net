@@ -9,8 +9,8 @@ namespace LeoClinic.Application.Interfaces
     {
         Task<IEnumerable<AppointmentDto>> GetAllByPatientAsync(int patientId);
         Task<AppointmentDto?> GetAppointmentByIdAsync(int id);
-        Task<AppointmentDto> BookAppointmentAsync(CreateAppointmentDTO appointment);
-        Task<bool> UpdateAppointmentStatusAsync(int id, AppointmentStatus status);
-        Task<bool> RescheduleAppointment(int id, int availabilityId);
+        Task<AppointmentDto> BookAppointmentAsync(int patientId, CreateAppointmentDTO appointment);
+        Task<bool> UpdateAppointmentStatusAsync(int id, AppointmentStatus status, int? patientId = null);
+        Task<bool> RescheduleAppointment(int id, int availabilityId, int patientId);
     }
 }
