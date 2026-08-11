@@ -23,6 +23,35 @@ namespace LeoClinic.Application.Services
                 throw new ArgumentException("Notification message is required.");
             }
 
+            if (dto.UserId <= 0)
+            {
+                throw new ArgumentException("Invalid user ID.");
+            }
+
+            if (!Enum.IsDefined(typeof(NotificationType), dto.Type))
+            {
+                throw new ArgumentException($"Invalid notification type: {dto.Type}");
+            }
+
+            if (dto.AppointmentId.HasValue && dto.AppointmentId.Value > 0)
+            {
+                var appointment = await _appointmentRepo.GetAppointmentByIdAsync(dto.AppointmentId.Value);
+                if (appointment == null)
+                {
+                    throw new KeyNotFoundException($"Appointment with ID {dto.AppointmentId} not found.");
+                }
+
+                if (appointment.Status == AppointmentStatus.Cancelled)
+                {
+                    throw new InvalidOperationException("Cannot send notification for a cancelled appointment.");
+                }
+
+                if (appointment.Status == AppointmentStatus.Rejected)
+                {
+                    throw new InvalidOperationException("Cannot send notification for a rejected appointment.");
+                }
+            }
+
             var notification = new Notification
             {
                 UserId = dto.UserId,
@@ -46,6 +75,16 @@ namespace LeoClinic.Application.Services
             if (appointment == null)
             {
                 throw new KeyNotFoundException("Appointment not found.");
+            }
+
+            if (appointment.Status == AppointmentStatus.Cancelled)
+            {
+                throw new InvalidOperationException("Cannot send notification for a cancelled appointment.");
+            }
+
+            if (appointment.Status == AppointmentStatus.Rejected)
+            {
+                throw new InvalidOperationException("Cannot send notification for a rejected appointment.");
             }
 
             var userIds = new List<int>();
