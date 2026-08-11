@@ -21,9 +21,8 @@ namespace LeoClinic.Application.Services
             var app = new Appointment
             {
                 PatientId = patientId,
-                DoctorId = appointment.DoctorId,
                 AvailabilityId = appointment.AvailabilityId,
-                Notes = appointment.Notes,
+                Notes = appointment.Notes ?? string.Empty,
                 Status = AppointmentStatus.Pending,
                 CreatedAt = DateTime.UtcNow,
             };
@@ -45,6 +44,7 @@ namespace LeoClinic.Application.Services
                 DoctorId = bookedAppointment.DoctorId,
                 Date = bookedAppointment.Availability?.Date ?? DateTime.MinValue,
                 StartTime = bookedAppointment.Availability?.StartTime ?? TimeSpan.Zero,
+                EndTime = bookedAppointment.Availability?.EndTime ?? TimeSpan.Zero,
                 LocationName = bookedAppointment.Availability?.Location?.Name ?? string.Empty,
                 PaymentAmount = bookedAppointment.Payment?.Amount
             };
@@ -122,7 +122,7 @@ namespace LeoClinic.Application.Services
 
             if (newSlot == null || oldSlot == null)
             {
-                return false;
+                throw new KeyNotFoundException("Avaliability Slot Not Found");
             }
 
             if (newSlot.DoctorId != oldSlot.DoctorId)

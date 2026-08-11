@@ -128,7 +128,6 @@ namespace LeoClinic.Application.Services
                 patient.DateOfBirth = patientProfile.DateOfBirth;
                 patient.User.FirstName = patientProfile.FirstName;
                 patient.User.LastName = patientProfile.LastName;
-                patient.User.Email = patientProfile.Email;
                 patient.UpdatedAt = DateTime.UtcNow;
                 try
                 {

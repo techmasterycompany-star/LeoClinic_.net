@@ -11,9 +11,6 @@ namespace LeoClinic.Application.DTOs.Patient
     {
         [Required]
         [Range(1, int.MaxValue, ErrorMessage = "Zero and negative numbers are invalid for id")]
-        public int DoctorId { get; set; }
-        [Required]
-        [Range(1, int.MaxValue, ErrorMessage = "Zero and negative numbers are invalid for id")]
         public int AvailabilityId { get; set; }
         public string? Notes { get; set; } = string.Empty;
     }
