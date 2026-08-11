@@ -10,6 +10,7 @@ namespace LeoClinic.Application.DTOs.Doctor
         public string Notes { get; set; } = string.Empty;
         public string PatientName { get; set; } = string.Empty;
         public string DoctorName { get; set; } = string.Empty;
+        public int DoctorId { get; set; }
         public DateTime Date { get; set; }
         public TimeSpan StartTime { get; set; }
         public TimeSpan EndTime { get; set; }

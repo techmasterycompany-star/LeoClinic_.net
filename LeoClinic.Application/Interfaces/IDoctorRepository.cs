@@ -4,17 +4,22 @@ namespace LeoClinic.Application.Interfaces
 {
     public interface IDoctorRepository
     {
-        Task<IEnumerable<DoctorProfile>> SearchAsync(string? specialty, int? locationId, string? name, bool? isApproved);
+        Task<IEnumerable<DoctorProfile>> SearchAsync(string? specialty, int? locationId, string? name);
         Task<IEnumerable<DoctorProfile>> GetAllAsync();
         Task<DoctorProfile?> GetByIdAsync(int id);
-        Task<DoctorProfile> CreateAsync(DoctorProfile doctorProfile);
+        Task<DoctorProfile?> GetByUserIdAsync(int userId);
+        //Task<DoctorProfile> CreateAsync(DoctorProfile doctorProfile);
         void Update(DoctorProfile doctorProfile);
         void Delete(DoctorProfile doctorProfile);
+        void RemoveRatings(ICollection<Rating> ratings);
+        void RemoveAppointments(ICollection<Appointment> appointments);
+        void RemoveAvailabilities(ICollection<Availability> availabilities);
         Task<IEnumerable<DoctorProfile>> GetApprovedDoctorsAsync();
 
 
         Task<Availability> AddSlotAsync(Availability slot);
         Task<IEnumerable<Availability>> GetSlotsByDoctorIdAsync(int doctorId);
+        Task<Location?> GetLocationByIdAsync(int locationId);
 
 
         Task<IEnumerable<Appointment>> GetAppointmentsAsync(int doctorId);

@@ -30,7 +30,7 @@ public class DoctorProfileConfiguration : IEntityTypeConfiguration<DoctorProfile
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasOne(d => d.Speciality)
-            .WithMany()
+            .WithMany(s => s.DoctorProfiles)
             .HasForeignKey(d => d.SpecialityId)
             .OnDelete(DeleteBehavior.Restrict);
     }

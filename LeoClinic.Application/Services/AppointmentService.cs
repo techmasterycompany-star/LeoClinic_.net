@@ -42,6 +42,7 @@ namespace LeoClinic.Application.Services
                 DoctorName = bookedAppointment.DoctorProfile?.User != null
                     ? $"{bookedAppointment.DoctorProfile.User.FirstName} {bookedAppointment.DoctorProfile.User.LastName}"
                     : string.Empty,
+                DoctorId = bookedAppointment.DoctorId,
                 Date = bookedAppointment.Availability?.Date ?? DateTime.MinValue,
                 StartTime = bookedAppointment.Availability?.StartTime ?? TimeSpan.Zero,
                 LocationName = bookedAppointment.Availability?.Location?.Name ?? string.Empty,
@@ -64,6 +65,7 @@ namespace LeoClinic.Application.Services
                 DoctorName = appointment.DoctorProfile?.User != null
                     ? $"{appointment.DoctorProfile.User.FirstName} {appointment.DoctorProfile.User.LastName}"
                     : string.Empty,
+                DoctorId = appointment.DoctorId,
                 Date = appointment.Availability?.Date ?? DateTime.MinValue,
                 StartTime = appointment.Availability?.StartTime ?? TimeSpan.Zero,
                 EndTime = appointment.Availability?.EndTime ?? TimeSpan.Zero,
@@ -92,6 +94,7 @@ namespace LeoClinic.Application.Services
                 DoctorName = appointment.DoctorProfile?.User != null
                     ? $"{appointment.DoctorProfile.User.FirstName} {appointment.DoctorProfile.User.LastName}"
                     : string.Empty,
+                DoctorId = appointment.DoctorId,
                 Date = appointment.Availability?.Date ?? DateTime.MinValue,
                 StartTime = appointment.Availability?.StartTime ?? TimeSpan.Zero,
                 EndTime = appointment.Availability?.EndTime ?? TimeSpan.Zero,
