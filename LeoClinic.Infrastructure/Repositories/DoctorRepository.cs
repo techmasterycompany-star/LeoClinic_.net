@@ -12,7 +12,7 @@ namespace LeoClinic.Infrastructure.Repositories
         {
             this.context = context;
         }
-        public async Task<IEnumerable<DoctorProfile>> SearchAsync(string? specialty, int? locationId, string? name)
+        public async Task<IEnumerable<DoctorProfile>> SearchAsync(string? specialty, int? locationId, string? name, bool? isApproved)
         {
             var query = context.DoctorProfiles
                 .Include(d => d.User)
@@ -33,6 +33,11 @@ namespace LeoClinic.Infrastructure.Repositories
             if (!string.IsNullOrEmpty(name))
             {
                 query = query.Where(d => d.User.FirstName.ToLower().Contains(name.ToLower()) || d.User.LastName.ToLower().Contains(name.ToLower()));
+            }
+
+            if (isApproved.HasValue)
+            {
+                query = query.Where(d => d.IsApproved == isApproved.Value);
             }
 
             return await query.ToListAsync();

@@ -4,7 +4,7 @@ namespace LeoClinic.Application.Interfaces
 {
     public interface IDoctorRepository
     {
-        Task<IEnumerable<DoctorProfile>> SearchAsync(string? specialty, int? locationId, string? name);
+        Task<IEnumerable<DoctorProfile>> SearchAsync(string? specialty, int? locationId, string? name, bool? isApproved);
         Task<IEnumerable<DoctorProfile>> GetAllAsync();
         Task<DoctorProfile?> GetByIdAsync(int id);
         Task<DoctorProfile?> GetByUserIdAsync(int userId);
