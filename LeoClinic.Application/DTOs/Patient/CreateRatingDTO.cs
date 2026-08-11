@@ -5,12 +5,7 @@ namespace LeoClinic.Application.DTOs.Patient
     public class CreateRatingDTO
     {
         [Required]
-        [Range(1, int.MaxValue, ErrorMessage = "DoctorId must be a positive integer.")]
         public int DoctorId { get; set; }
-
-        [Required]
-        [Range(1, int.MaxValue, ErrorMessage = "PatientId must be a positive integer.")]
-        public int PatientId { get; set; }
 
         [Required]
         [Range(1, 5, ErrorMessage = "Rating Value must be between 1 and 5.")]

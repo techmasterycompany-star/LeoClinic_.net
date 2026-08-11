@@ -12,8 +12,8 @@ namespace LeoClinic.Application.Interfaces
     public interface IRatingService
     {
         Task<RatingDto?> GetRatingByIdAsync(int id);
-        Task<Rating> CreateRating(CreateRatingDTO rating);
-        Task<bool> UpdateRating(int id, UpdateRatingDTO rating);
-        Task<bool> DeleteRating(int id);
+        Task<Rating> CreateRating(int patientId, CreateRatingDTO rating);
+        Task<bool> UpdateRating(int id, int patientId, UpdateRatingDTO rating);
+        Task<bool> DeleteRating(int id, int patientId);
     }
 }

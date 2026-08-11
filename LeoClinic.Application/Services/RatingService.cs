@@ -19,9 +19,9 @@ namespace LeoClinic.Application.Services
             _ratingRepository = ratingRepository;
             _appointmentRepository = appointmentRepository;
         }
-        public async Task<Rating> CreateRating(CreateRatingDTO rating)
+        public async Task<Rating> CreateRating(int patientId, CreateRatingDTO rating)
         {
-            var canReview = await _appointmentRepository.hasCompletedAppointment(rating.PatientId, rating.DoctorId);
+            var canReview = await _appointmentRepository.hasCompletedAppointment(patientId, rating.DoctorId);
             if(!canReview)
             {
                 throw new InvalidOperationException("Patient has not completed an appointment with this doctor.");
@@ -30,7 +30,7 @@ namespace LeoClinic.Application.Services
             var ratingEntity = new Rating
             {
                 DoctorId = rating.DoctorId,
-                PatientId = rating.PatientId,
+                PatientId = patientId,
                 Rate = rating.RatingValue,
                 Review = rating.Review ?? string.Empty
             };
@@ -38,11 +38,20 @@ namespace LeoClinic.Application.Services
             return await _ratingRepository.CreateRating(ratingEntity);
         }
 
-        public async Task<bool> DeleteRating(int id)
+        public async Task<bool> DeleteRating(int id, int patientId)
         {
             try
             {
-                await _ratingRepository.DeleteRating(id);
+                var ratingToDelete = await _ratingRepository.GetRatingByIdAsync(id);
+                if (ratingToDelete == null)
+                {
+                    return false;
+                }
+                if (ratingToDelete.PatientId != patientId)
+                {
+                    throw new UnauthorizedAccessException("You are not authorized to update this rating.");
+                }
+                await _ratingRepository.DeleteRating(ratingToDelete);
                 return true;
             }
             catch
@@ -72,12 +81,16 @@ namespace LeoClinic.Application.Services
         }
 
 
-        public async Task<bool> UpdateRating(int id, UpdateRatingDTO rating)
+        public async Task<bool> UpdateRating(int id, int patientId, UpdateRatingDTO rating)
         {
             var ratingToUpdate = await _ratingRepository.GetRatingByIdAsync(id);
             if (ratingToUpdate == null)
             {
                 return false;
+            }
+            if (ratingToUpdate.PatientId != patientId)
+            {
+                throw new UnauthorizedAccessException("You are not authorized to update this rating.");
             }
             ratingToUpdate.Rate = rating.RatingValue;
             ratingToUpdate.Review = rating.Review ?? string.Empty;

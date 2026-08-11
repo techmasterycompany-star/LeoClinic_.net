@@ -16,11 +16,11 @@ namespace LeoClinic.Application.Services
             _appointmentRepo = appointmentRepo;
             _availabilityRepository = availabilityRepository;
         }
-        public async Task<AppointmentDto> BookAppointmentAsync(CreateAppointmentDTO appointment)
+        public async Task<AppointmentDto> BookAppointmentAsync(int patientId, CreateAppointmentDTO appointment)
         {
             var app = new Appointment
             {
-                PatientId = appointment.PatientId,
+                PatientId = patientId,
                 DoctorId = appointment.DoctorId,
                 AvailabilityId = appointment.AvailabilityId,
                 Notes = appointment.Notes,
@@ -104,12 +104,17 @@ namespace LeoClinic.Application.Services
         }
 
 
-        public async Task<bool> RescheduleAppointment(int id, int newAvailabilityId)
+        public async Task<bool> RescheduleAppointment(int id, int newAvailabilityId, int patientId)
         {
             var appointment = await _appointmentRepo.GetAppointmentByIdAsync(id);
             if (appointment == null)
             {
                 return false;
+            }
+
+            if (appointment.PatientId != patientId)
+            {
+                throw new UnauthorizedAccessException("You are not authorized to reschedule this appointment.");
             }
 
             var oldSlot = appointment.Availability;
@@ -137,12 +142,19 @@ namespace LeoClinic.Application.Services
             return true;
         }
 
-        public async Task<bool> UpdateAppointmentStatusAsync(int id, AppointmentStatus status)
+        public async Task<bool> UpdateAppointmentStatusAsync(int id, AppointmentStatus status, int? patientId)
         {
             var appointment = await _appointmentRepo.GetAppointmentByIdAsync(id);
             if (appointment == null)
             {
                 return false;
+            }
+
+            if(patientId != null) { 
+                if (appointment.PatientId != patientId)
+                {
+                    throw new UnauthorizedAccessException("You are not authorized to update this appointment.");
+                }
             }
 
             appointment.Status = status;

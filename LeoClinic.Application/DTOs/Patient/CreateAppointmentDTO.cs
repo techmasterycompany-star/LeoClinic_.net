@@ -8,7 +8,6 @@ namespace LeoClinic.Application.DTOs.Patient
 {
     public class CreateAppointmentDTO
     {
-        public int PatientId { get; set; }
         public int DoctorId { get; set; }
         public int AvailabilityId { get; set; }
         public string Notes { get; set; } = string.Empty;
