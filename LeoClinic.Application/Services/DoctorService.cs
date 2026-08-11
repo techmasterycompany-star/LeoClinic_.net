@@ -165,9 +165,9 @@ namespace LeoClinic.Application.Services
             }).ToList();
         }
 
-        public async Task<IEnumerable<DoctorProfileDto?>> SearchDoctorAsync(string? specialty, int? locationId, string? name)
+        public async Task<IEnumerable<DoctorProfileDto?>> SearchDoctorAsync(string? specialty, int? locationId, string? name, bool? isApproved)
         {
-            var doctors = await repo.SearchAsync(specialty, locationId, name);    
+            var doctors = await repo.SearchAsync(specialty, locationId, name, isApproved);    
 
             return doctors.Select(d => new DoctorProfileDto
             {
