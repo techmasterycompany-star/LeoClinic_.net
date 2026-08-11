@@ -74,5 +74,10 @@ namespace LeoClinic.Infrastructure.Repositories
                 throw new KeyNotFoundException($"Patient with id: {id} not found");
             }
         }
+
+        public async Task<PatientProfile?> GetPatientByUserIdAsync(int userId)
+        {
+            return await _context.PatientProfiles.Include(p => p.User).FirstOrDefaultAsync(p => p.UserId == userId);
+        }
     }
 }
