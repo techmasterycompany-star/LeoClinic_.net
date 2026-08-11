@@ -13,7 +13,7 @@ namespace LeoClinic.Application.Interfaces
         Task<DoctorProfileDto?> UpdateProfileAsync(int id ,UpdateDoctorDto dto);
         Task<bool> DeleteProfileAsync(int id);
         Task<bool> ApproveDoctorAsync(int id);
-        Task<bool> RejectDoctorAsync(int id);
+        //Task<bool> RejectDoctorAsync(int id);
         Task<IEnumerable<DoctorProfileDto>> GetApprovedDoctorsAsync();
 
         Task<DoctorProfile?> GetDoctorByUserIdAsync(int userId);

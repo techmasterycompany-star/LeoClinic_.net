@@ -35,11 +35,6 @@ namespace LeoClinic.Infrastructure.Repositories
                 query = query.Where(d => d.User.FirstName.ToLower().Contains(name.ToLower()) || d.User.LastName.ToLower().Contains(name.ToLower()));
             }
 
-            //if (isApproved.HasValue)
-            //{
-            //    query = query.Where(d => d.IsApproved == isApproved.Value);
-            //}
-
             return await query.ToListAsync();
         }
         public async Task<Availability> AddSlotAsync(Availability slot)

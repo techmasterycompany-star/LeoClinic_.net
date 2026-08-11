@@ -342,18 +342,18 @@ namespace LeoClinic.Application.Services
             }).ToList();
         }
 
-        public async Task<bool> RejectDoctorAsync(int id)
-        {
-            var doctor = await repo.GetByIdAsync(id);
-            if (doctor is null) return false;
+        //public async Task<bool> RejectDoctorAsync(int id)
+        //{
+        //    var doctor = await repo.GetByIdAsync(id);
+        //    if (doctor is null) return false;
 
-            doctor.IsApproved = false;
-            doctor.UpdatedAt = DateTime.UtcNow;
+        //    doctor.IsApproved = false;
+        //    doctor.UpdatedAt = DateTime.UtcNow;
 
-            repo.Update(doctor);
-            await repo.SaveChangesAsync();
-            return true;
-        }
+        //    repo.Update(doctor);
+        //    await repo.SaveChangesAsync();
+        //    return true;
+        //}
 
         public async Task<AppointmentDto?> UpdateAppointmentAsync(int appointmentId, AppointmentStatus status)
         {
